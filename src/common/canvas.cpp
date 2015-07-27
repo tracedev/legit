@@ -31,6 +31,7 @@
 #include "common/utils/utils.h"
 #include "common/utils/defs.h"
 #include <opencv2/imgproc/imgproc.hpp>
+  
 
 #ifndef FOURCC_MACRO
 #define FOURCC_MACRO(c1, c2, c3, c4) (((c1) & 255) + (((c2) & 255) << 8) + (((c3) & 255) << 16) + (((c4) & 255) << 24))
@@ -444,4 +445,3 @@ void VideoCanvas::push(int times)
 }
 
 }
-

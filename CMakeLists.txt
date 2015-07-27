@@ -3,7 +3,7 @@ PROJECT (legit)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 GET_FILENAME_COMPONENT(PROJECT_ROOT . ABSOLUTE)
 GET_FILENAME_COMPONENT(BUILD_ROOT ${CMAKE_CURRENT_BINARY_DIR} ABSOLUTE)
-SET(CMAKE_MODULE_PATH ${PROJECT_ROOT}/cmake)
+SET(CMAKE_MODULE_PATH ${PROJECT_ROOT}/cmakefiles)
 INCLUDE(LegitUtilities REQUIRED)
 INCLUDE(PlatformUtilities REQUIRED)
 
@@ -14,22 +14,22 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 LEGIT_ADD_SOURCES(
 	src/common/utils/utils.cpp
-	src/common/utils/config.cpp
-	src/common/utils/graphics.cpp
-	src/common/utils/debug.cpp
-	src/common/utils/string.cpp
-	src/common/image/histogram.cpp
-	src/common/image/sequence.cpp
-	src/common/image/image.cpp
-	src/common/image/integral.cpp
-	src/common/math/statistics.cpp
-	src/common/math/geometry.cpp
-	src/common/gui/gui.cpp
-	src/common/gui/window.cpp
-	src/common/canvas.cpp
-    src/api/legit.cpp
-    src/observers.cpp
-	src/tracker.cpp
+		src/common/utils/config.cpp
+		src/common/utils/graphics.cpp
+		src/common/utils/debug.cpp
+		src/common/utils/string.cpp
+		src/common/image/histogram.cpp
+		src/common/image/sequence.cpp
+		src/common/image/image.cpp
+		src/common/image/integral.cpp
+		src/common/math/statistics.cpp
+		src/common/math/geometry.cpp
+		src/common/gui/gui.cpp
+		src/common/gui/window.cpp
+		src/common/canvas.cpp
+	    src/api/legit.cpp
+	    src/observers.cpp
+		src/tracker.cpp
 )
 
 ADD_SUBDIRECTORY(src/common/platform)
@@ -80,8 +80,6 @@ IF(BUILD_TRAX)
  	ENDIF(TRAX_DEBUG)
 ENDIF(BUILD_TRAX)
 
-ADD_EXECUTABLE(legit_runner src/runner.cpp)
-TARGET_LINK_LIBRARIES(legit_runner legit)
 
 INSTALL(TARGETS legit LIBRARY DESTINATION lib)
 INSTALL(FILES src/api/legit.h DESTINATION include)

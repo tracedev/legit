@@ -7,5 +7,5 @@ LEGIT_ADD_SOURCES(
   wrappers.cpp
 )
 
-LEGIT_REGISTER_TRACKER(wrappers.h OnlineBoostingTracker)
-LEGIT_REGISTER_TRACKER(wrappers.h MILTracker)
+LEGIT_REGISTER_TRACKER(wrappers.h OnlineBoostingTracker opencv)
+LEGIT_REGISTER_TRACKER(wrappers.h MILTracker opencv)

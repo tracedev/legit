@@ -65,7 +65,7 @@ private:
   int levels;
   int window_size;
 
-  Ptr<FilterEngine> gaussian;
+  //Ptr<FilterEngine> gaussian;
 
   Mat map;
 };

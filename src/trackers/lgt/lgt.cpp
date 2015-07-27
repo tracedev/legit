@@ -43,7 +43,7 @@ LGTTracker::LGTTracker(Config& config, string inst) :
   patches(6, 30),
   modalities(config),
   verbosity(config.read<int>("tracker.verbosity", 0)),
-  probability_size(config.read<int>("sampling.size")),
+  probability_size(config.read<int>("sampling.size", 20000)),
   global_optimization(
     config.read<int>("optimization.global.minsamples", 100),
     config.read<int>("optimization.global.maxsamples", 300),
@@ -67,9 +67,9 @@ LGTTracker::LGTTracker(Config& config, string inst) :
 
   patch_scale = configuration.read<double>("patch.scale", 1.0);
 
-  patches_max = configuration.read<int>("pool.max");
-  patches_min = configuration.read<int>("pool.min");
-  patches_persistence = configuration.read<double>("pool.persistence");
+  patches_max = configuration.read<int>("pool.max", 6);
+  patches_min = configuration.read<int>("pool.min", 36 );
+  patches_persistence = configuration.read<double>("pool.persistence", 0.8);
 
   reweight_persistence = configuration.read<double>("reweight.persistence", 0.5);
   reweight_similarity = configuration.read<double>("reweight.similarity", 3);
@@ -78,8 +78,8 @@ LGTTracker::LGTTracker(Config& config, string inst) :
   weight_remove_threshold = configuration.read<double>("remove.weight", 0.1);
   merge_distance = configuration.read<double>("merge.distance", 1.0);
 
-  lambda_geometry = configuration.read<double>("optimization.geometry");
-  lambda_visual = configuration.read<double>("optimization.visual");
+  lambda_geometry = configuration.read<double>("optimization.geometry", 0.03);
+  lambda_visual = configuration.read<double>("optimization.visual", 1);
 
   optimization_global_M = configuration.read<double>("optimization.global.move", 20);
   optimization_global_R = configuration.read<double>("optimization.global.rotate", 0.08);

@@ -44,7 +44,7 @@ class LegitTracker {
 
 public:
 
-  LegitTracker(const char* config, const char* id = "default");
+  LegitTracker(const char* id = "default");
   ~LegitTracker();
 
   void clear_image();

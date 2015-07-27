@@ -37,6 +37,8 @@ namespace tracker
 #define OPTICALFLOW_MAX_RESIDUE 1e5
 #define MOTION_LK_SIZE 55
 
+
+
 ModalityMotionLK::ModalityMotionLK(Config& config, string configbase) : Modality(config, configbase), step(2), history(step, step), motion(step, step)
 {
 
@@ -52,7 +54,9 @@ ModalityMotionLK::ModalityMotionLK(Config& config, string configbase) : Modality
 
   float sigma = 0.3*(MOTION_LK_SIZE/2 - 1) + 0.8;
 
-  gaussian = createGaussianFilter(CV_32F, Size(MOTION_LK_SIZE, MOTION_LK_SIZE), sigma, sigma);
+//  gaussian = createGaussianFilter(CV_32F, Size(MOTION_LK_SIZE, MOTION_LK_SIZE), sigma, sigma);
+//  GaussianBlur(CV_32F,CV_32F, Size(MOTION_LK_SIZE, MOTION_LK_SIZE), sigma, 0)
+
 
   DEBUGMSG("Motion LK: sigma %f, size %d\n", sigma, MOTION_LK_SIZE);
 
@@ -223,7 +227,15 @@ void ModalityMotionLK::probability(Image& image, Mat& p)
   else
     {
       Mat c = map(image.get_roi());
-      gaussian->apply(c, p);
+
+
+      //gaussian->apply(c, p);
+      //  gaussian = createGaussianFilter(CV_32F, Size(MOTION_LK_SIZE, MOTION_LK_SIZE), sigma, sigma);
+
+      float sigma = 0.3*(MOTION_LK_SIZE/2 - 1) + 0.8;
+
+        GaussianBlur(c,p, Size(MOTION_LK_SIZE, MOTION_LK_SIZE), sigma, 0);
+
       //p *= -1;
       //p += 1;
     }
@@ -234,5 +246,3 @@ void ModalityMotionLK::probability(Image& image, Mat& p)
 }
 
 }
-
-

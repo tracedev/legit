@@ -30,6 +30,8 @@
 #include "common/utils/string.h"
 #include "common/gui/gui.h"
 #include "common/gui/window.h"
+#include <opencv2/imgproc/imgproc.hpp>
+
 
 namespace legit
 {
@@ -346,6 +348,7 @@ void Menu::draw(Ptr<Canvas> window)
     {
       int baseline = 0;
       Size sz = getTextSize(choices[i].c_str(), FONT_HERSHEY_SIMPLEX, 0.4, 1, &baseline);
+
 
       Point textOffset = buttonOffset;
 //        textOffset.x += sz

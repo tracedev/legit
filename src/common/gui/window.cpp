@@ -84,7 +84,7 @@ ImageWindow* ImageWindow::create(string t, Size size, bool aup)
 
 }
 
-ImageWindow::ImageWindow(string t, Size size, bool aup) : ImageCanvas(size), title(t), autoupdate(aup), output(NULL)
+ImageWindow::ImageWindow(string t, Size size, bool aup) : ImageCanvas(size), title(t), autoupdate(aup), output()
 {
 
   namedWindow(title, WINDOW_AUTOSIZE);

@@ -4,4 +4,4 @@ LEGIT_ADD_SOURCES(
   static.cpp
 )
 
-LEGIT_REGISTER_TRACKER(static.h StaticTracker)
+LEGIT_REGISTER_TRACKER(static.h StaticTracker basic)
