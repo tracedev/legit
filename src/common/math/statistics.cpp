@@ -247,7 +247,7 @@ void sample_map(Mat& map, Point* points, int count, float* values)
     }
 
   if (rows[nr-1] == 0)
-    throw exception();
+    throw 20;
 
   for (int p = 0; p < count; p++)
     {
