@@ -80,7 +80,7 @@ void ModalityMotionLK::flush()
 void ModalityMotionLK::update(Image& image, PatchSet* patchSet, Rect bounds)
 {
 
-  Ptr<PatchSet> patches = reliablePatchesFilter.empty() ? patchSet : patchSet->filter(*reliablePatchesFilter);
+  Ptr<PatchSet> patches = Ptr<PatchSet>(reliablePatchesFilter.empty() ? patchSet : patchSet->filter(*reliablePatchesFilter));
 
   Point2f globalMotion(0, 0);
   float w = 0;

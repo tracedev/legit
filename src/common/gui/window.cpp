@@ -273,7 +273,7 @@ void ImageWindow::push(int times)
 
   if (output.empty())
     {
-      output = new VideoCanvas(output_file, 10, cv::Size(width(), height()), true);
+      output = Ptr<Canvas>(new VideoCanvas(output_file, 10, cv::Size(width(), height()), true));
     }
 
   output->draw(image);

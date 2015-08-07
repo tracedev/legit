@@ -88,7 +88,7 @@ OnlineBoostingTracker::OnlineBoostingTracker(Config& config, string id) : OpenCV
   params.overlap_ = config.read<float>("overlap", 0.99f);
   params.search_factor_ = config.read<float>("search_factor", 2.0f);
 
-  tracker = new ObjectTracker(params);
+  tracker = Ptr<ObjectTracker>(new ObjectTracker(params));
 
 }
 
@@ -113,7 +113,7 @@ MILTracker::MILTracker(Config& config, string id) : OpenCVTracker(config, id)
   params.neg_num_train_ = config.read<int>("neg_num_train", 65);
   params.num_features_ = config.read<int>("num_features", 250);
 
-  tracker = new ObjectTracker(params);
+  tracker = Ptr<ObjectTracker>(new ObjectTracker(params));
 
 }
 

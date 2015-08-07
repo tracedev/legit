@@ -59,7 +59,7 @@ namespace cv
 //
 // :TODO: to be filled-in as needed...
 //
-CV_EXPORTS struct ObjectTrackerParams
+struct ObjectTrackerParams
 {
   enum
   {
@@ -87,7 +87,7 @@ CV_EXPORTS struct ObjectTrackerParams
 
 // The base (abstract) tracking algorithm class, to define the interface
 // for all other specific object tracking algorithm classes.
-CV_EXPORTS class TrackingAlgorithm
+class TrackingAlgorithm
 {
 public:
   TrackingAlgorithm();
@@ -95,7 +95,7 @@ public:
   ~TrackingAlgorithm();
 
   virtual bool
-  initialize(const cv::Mat & image, const ObjectTrackerParams& params, const CvRect& init_bounding_box) = 0;
+  initialize(const cv::Mat & image, const ObjectTrackerParams& params, const cv::Rect& init_bounding_box) = 0;
 
   virtual bool
   update(const cv::Mat & image, const ObjectTrackerParams& params, cv::Rect & track_box) = 0;
@@ -120,14 +120,14 @@ protected:
 // H. Grabner, M. Grabner, and H. Bischof.  "Real-time Tracking via On-line Boosting",
 // In Proceedings British Machine Vision Conference (BMVC), volume 1, pages 47-56, 2006.
 //
-CV_EXPORTS class OnlineBoostingAlgorithm: public TrackingAlgorithm
+class OnlineBoostingAlgorithm: public TrackingAlgorithm
 {
 public:
   OnlineBoostingAlgorithm();
   ~OnlineBoostingAlgorithm();
 
   virtual bool
-  initialize(const cv::Mat & image, const ObjectTrackerParams& params, const CvRect& init_bounding_box);
+  initialize(const cv::Mat & image, const ObjectTrackerParams& params, const cv::Rect& init_bounding_box);
 
   virtual bool
   update(const cv::Mat & image, const ObjectTrackerParams& params, cv::Rect & track_box);
@@ -162,14 +162,14 @@ private:
 // Robust Tracking", In Proceedings European Conference on Computer Vision (ECCV),
 // 2008.
 //
-CV_EXPORTS class SemiOnlineBoostingAlgorithm: public TrackingAlgorithm
+class SemiOnlineBoostingAlgorithm: public TrackingAlgorithm
 {
 public:
   SemiOnlineBoostingAlgorithm();
   ~SemiOnlineBoostingAlgorithm();
 
   virtual bool
-  initialize(const cv::Mat & image, const ObjectTrackerParams& params, const CvRect& init_bounding_box);
+  initialize(const cv::Mat & image, const ObjectTrackerParams& params, const cv::Rect& init_bounding_box);
 
   virtual bool
   update(const cv::Mat & image, const ObjectTrackerParams& params, cv::Rect & track_box);
@@ -203,14 +203,14 @@ private:
 // B. Babenko, M.H. Yang, and S. Belongie.  "Visual Tracking with Online Multiple
 // Instance Learning", CVPR 2009, Miami, Florida.
 //
-CV_EXPORTS class OnlineMILAlgorithm: public TrackingAlgorithm
+class OnlineMILAlgorithm: public TrackingAlgorithm
 {
 public:
   OnlineMILAlgorithm();
   ~OnlineMILAlgorithm();
 
   virtual bool
-  initialize(const cv::Mat & image, const ObjectTrackerParams& params, const CvRect& init_bounding_box);
+  initialize(const cv::Mat & image, const ObjectTrackerParams& params, const cv::Rect& init_bounding_box);
 
   virtual bool
   update(const cv::Mat & image, const ObjectTrackerParams& params, cv::Rect & track_box);
@@ -242,14 +242,14 @@ private:
 //
 // ... fill-in when paper is accepted and we have permission ...
 //
-CV_EXPORTS class LINEMODAlgorithm: public TrackingAlgorithm
+class LINEMODAlgorithm: public TrackingAlgorithm
 {
 public:
   LINEMODAlgorithm();
   ~LINEMODAlgorithm();
 
   virtual bool
-  initialize(const cv::Mat & image, const ObjectTrackerParams& params, const CvRect& init_bounding_box);
+  initialize(const cv::Mat & image, const ObjectTrackerParams& params, const cv::Rect& init_bounding_box);
 
   virtual bool
   update(const cv::Mat & image, const ObjectTrackerParams& params, cv::Rect & track_box);
@@ -270,7 +270,7 @@ protected:
 // tracking algorithm to implement, based on the 'algorithm' field
 // in the ObjectTrackerParams.
 //
-CV_EXPORTS class ObjectTracker
+class ObjectTracker
 {
 public:
   // Default constructor--performs initializations of the class and memory.
@@ -297,11 +297,11 @@ public:
   // -- Be sure to do boundary checks on 'boundingBox' to account for user error.
   //
   virtual bool
-  initialize(const cv::Mat & image, const CvRect& bounding_box);
+  initialize(const cv::Mat & image, const cv::Rect& bounding_box);
 
   // Update the state of the tracker.  This assumes that initialization has already occurred.
   // If not, false will immediately be returned.  The new tracking bounding box will be
-  // returned via a pointer to 'trackBox' of type CvRect, giving the upper-left corner of the
+  // returned via a pointer to 'trackBox' of type cv::Rect, giving the upper-left corner of the
   // new track box as well as the width/height.  Some trackers may or may not update the size
   // of the bounding box from what was used in initialization, but just in case leave this in.
   // Otherwise I'd say just return a CvPoint* indicating a new centroid.

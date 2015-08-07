@@ -91,7 +91,7 @@ display(const cv::Mat & img, int fignum, float p)
   CV_Assert(!img.empty());
   char name[1024];
   sprintf(name, "Figure %d", fignum);
-  cv::namedWindow(name, CV_WINDOW_AUTOSIZE);
+  cv::namedWindow(name, cv::WINDOW_AUTOSIZE);
   cv::imshow(name, img);
 }
 
@@ -708,7 +708,7 @@ SimpleTracker::init(const cv::Mat & frame, const SimpleTrackerParams p, ClfStron
   std::vector<cv::Mat_<float> > ii_imgs;
   compute_integral(img, ii_imgs);
 
-  _clf = ClfStrong::makeClf(clfparams);
+  _clf = Ptr<ClfStrong>(ClfStrong::makeClf(clfparams));
   _curState.resize(4);
   for (int i = 0; i < 4; i++)
     _curState[i] = p._initstate[i];
@@ -729,7 +729,7 @@ SimpleTracker::init(const cv::Mat & frame, const SimpleTrackerParams p, ClfStron
   negx.clear();
 
   _trparams = p;
-  _clfparams = clfparams;
+  _clfparams = Ptr<ClfStrongParams>(clfparams);
   _cnt = 0;
   return true;
 }

@@ -60,7 +60,7 @@ public:
 LegitTracker::LegitTracker(const char*  id)
 {
 
-  impl = new Impl();
+  impl = Ptr<Impl>(new Impl());
 
   Config cfg;
   istringstream configStream("tracker = lgt \n tracker.focus = false \n tracker.verbosity = 2 \n size = 20000 \n # Patch settings \n patch.scale = 1.0 \n patch.type = histogram \n patch.histogram.bins = 16 \n # Patchset parameters \n pool.min = 6 \n pool.max = 36 \n pool.persistence = 0.8 \n # Sampling parameters \n sampling.size = 150 \n sampling.threshold = 0.2 \n sampling.mask = 3.0 \n # Remove and merge parameters \n remove.weight = 0.1 \n merge.distance = 0.5 \n # Patch reweight parameters \n reweight.similarity = 3 \n reweight.distance = 3 \n reweight.persistence = 0.5 \n # Optimization parameters \n optimization.global.move = 20 \n optimization.global.rotate = 0.03 \n optimization.global.scale = 0.0001 \n optimization.global.minsamples = 50 \n optimization.global.maxsamples = 300 \n optimization.global.add = 10 \n optimization.global.elite = 10 \n optimization.global.iterations = 10 \n optimization.local.move = 5 \n optimization.local.samples = 40 \n optimization.local.elite = 5 \n optimization.local.iterations = 10 \n optimization.geometry = 0.03 \n optimization.visual = 1 \n # Modalities \n # A HSV histogram for foreground and background \n cue1=colorhist \n cue1.colorspace=hsv \n cue1.filter.weight=0.5 \n cue1.bins.first=16 \n cue1.bins.second=16 \n cue1.bins.third=4 \n cue1.persistence.foreground=0.95 \n cue1.persistence.background=0.5 \n cue1.region.foreground=0.7 \n cue1.region.margin=10 \n cue1.region.background=35 \n cue1.region.noise=0.1 \n # A convex hull of the object \n cue2=convex \n cue2.filter.weight=0.5 \n cue2.margin=10 \n cue2.persistence=0.7 \n # A local motion estimation using LK optical-flow \n cue3=motionlk \n cue3.filter.weight=0.5 \n cue3.damping=1 \n cue3.persistence=0.7 \n cue3.lk.window=8 \n cue3.lk.layers 2 \n #cue3.harris_threshold = 20 \n #cue3.damping = 1 \n");
@@ -70,7 +70,7 @@ LegitTracker::LegitTracker(const char*  id)
   if (!cfg.keyExists("tracker"))
     throw LegitException("Unknown tracker type");
 
-  impl->tracker = create_tracker(cfg.read<string>("tracker"), cfg, id);
+  impl->tracker = Ptr<Tracker>(create_tracker(cfg.read<string>("tracker"), cfg, id));
 
   if (!impl->tracker)
     throw LegitException("Unable to create tracker");
@@ -216,105 +216,3 @@ bool LegitTracker::has_property(int code)
 }
 
 struct CLegitTracker : public LegitTracker {};
-
-extern "C" {
-
-  CLegitTracker * legit_tracker_create(const char *config)
-  {
-    return (CLegitTracker *)new LegitTracker(config);
-  }
-
-  void legit_tracker_destroy(CLegitTracker *t)
-  {
-    delete t;
-  }
-
-  void legit_tracker_initialize(CLegitTracker *t, const CvMat* image, CvRect region)
-  {
-    cv::Mat mat = cv::cvarrToMat(image);
-    t->initialize( mat, (cv::Rect)region);
-  }
-
-  void legit_tracker_update(CLegitTracker *t, const CvMat* image)
-  {
-    cv::Mat mat = cv::cvarrToMat(image);
-    t->update(mat);
-  }
-
-  CvRect legit_tracker_region(CLegitTracker *t)
-  {
-    return t->region();
-  }
-
-  CvPoint2D32f legit_tracker_position(CLegitTracker *t)
-  {
-    return (CvPoint2D32f) t->position();
-  }
-
-  int legit_tracker_is_tracking(CLegitTracker *t)
-  {
-    if(t->is_tracking())
-      {
-        return 1;
-      }
-    else
-      {
-        return 0;
-      }
-  }
-
-  void legit_tacker_visualize(CLegitTracker *t, const CvMat* canvas)
-  {
-
-   cv::Mat mat = cv::cvarrToMat(canvas);
-    t->visualize(mat);
-  }
-
-  const char* legit_tracker_get_name(CLegitTracker *t)
-  {
-    return t->get_name().c_str();
-    //return "test";
-    //return reinterpret_cast<const char*>(t->get_name());
-  }
-
-  void legit_set_property(CLegitTracker *t, int code, float value)
-  {
-
-    t->set_property(code, value);
-
-  }
-
-  float legit_get_property(CLegitTracker *t, int code)
-  {
-
-    return t->get_property(code);
-
-  }
-
-  void legit_remove_property(CLegitTracker *t, int code)
-  {
-
-    t->remove_property(code);
-
-  }
-
-  int legit_has_property(CLegitTracker *t, int code)
-  {
-
-    return t->has_property(code) ? 1 : 0;
-
-  }
-
-  int legit_toggle_debugging()
-  {
-
-    if (__is_debug_enabled())
-      __debug_disable();
-    else
-      __debug_enable();
-
-    return __is_debug_enabled();
-
-  }
-
-}

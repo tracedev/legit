@@ -56,7 +56,7 @@ void ModalityConvex::flush()
 void ModalityConvex::update(Image& image, PatchSet* patchSet, Rect bounds)
 {
 
-  Ptr<PatchSet> patches = reliablePatchesFilter.empty() ? patchSet : patchSet->filter(*reliablePatchesFilter);
+  Ptr<PatchSet> patches = Ptr<PatchSet>(reliablePatchesFilter.empty() ? patchSet : patchSet->filter(*reliablePatchesFilter));
 
   if (patches->size() < 3)
     {
@@ -198,7 +198,7 @@ void ModalityBounding::probability(Image& image, Mat& p)
 
   p.setTo(0);
 
-  rectangle(p, r.tl(), r.br(), Scalar(1), CV_FILLED);
+  rectangle(p, r.tl(), r.br(), Scalar(1), FILLED);
 
   p /= sum(p)[0];
 

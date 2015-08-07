@@ -220,7 +220,7 @@ Modality::Modality(Config& config, string configbase)
   double weight = (config.keyExists(configbase + ".filter.weight")) ? config.read<double>(configbase + ".filter.weight", 0) : config.read<double>("cues.filter.weight", 0);
   int age = (config.keyExists(configbase + ".filter.age")) ? config.read<int>(configbase + ".filter.weight", 0) : config.read<int>("cues.filter.age", 0);
 
-  reliablePatchesFilter = new ReliablePatchesFilter(weight, age);
+  reliablePatchesFilter = Ptr<ReliablePatchesFilter>(new ReliablePatchesFilter(weight, age));
 
   debugCanvas = get_canvas(config.read<string>(configbase + ".debug", ""));
 

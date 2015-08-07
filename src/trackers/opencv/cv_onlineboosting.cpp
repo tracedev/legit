@@ -41,6 +41,7 @@
  //M*/
 
 #include <iostream>
+#include <assert.h>
 
 #include <opencv2/imgproc/imgproc.hpp>
 
@@ -2198,12 +2199,12 @@ SemiBoostingTracker::SemiBoostingTracker(ImageRepresentation* image, Rect initPa
   this->validROI = validROI;
 
   //	classifierOff = new StrongClassifierDirectSelection(numBaseClassifier, numBaseClassifier*10, patchSize, useFeatureExchange, iterationInit);
-  classifierOff = new StrongClassifierStandardSemi(numBaseClassifier, numWeakClassifier, patchSize,
-      useFeatureExchange, iterationInit);
-  classifier = new StrongClassifierStandardSemi(numBaseClassifier, numWeakClassifier, patchSize, useFeatureExchange,
-      iterationInit);
+  classifierOff = Ptr<StrongClassifier>(new StrongClassifierStandardSemi(numBaseClassifier, numWeakClassifier, patchSize,
+      useFeatureExchange, iterationInit));
+  classifier = Ptr<StrongClassifierStandardSemi>(new StrongClassifierStandardSemi(numBaseClassifier, numWeakClassifier, patchSize, useFeatureExchange,
+      iterationInit));
 
-  detector = new Detector(classifier);
+  detector = Ptr<Detector>(new Detector(classifier));
 
   trackedPatch = initPatch;
   Rect trackingROI = getTrackingROI(2.0f);

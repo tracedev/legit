@@ -33,6 +33,7 @@
 #ifdef __cplusplus
 #include <string>
 #include <opencv2/core/core.hpp>
+#include <opencv2/core/types_c.h>
 
 using namespace cv;
 using namespace std;
@@ -89,45 +90,4 @@ private:
 #include <stdio.h>
 #include <cv.h>
 #endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-struct CLegitTracker;
-
-typedef struct CLegitTracker CLegitTracker;
-
-CLegitTracker* legit_tracker_create(const char* config);
-
-void legit_tracker_destroy(CLegitTracker *t);
-
-void legit_tracker_initialize(CLegitTracker *t, const CvMat* image, CvRect region);
-
-void legit_tracker_update(CLegitTracker *t, const CvMat* image);
-
-CvRect legit_tracker_region(CLegitTracker *t);
-
-CvPoint2D32f legit_tracker_position(CLegitTracker *t);
-
-int legit_tracker_is_tracking(CLegitTracker *t);
-
-void legit_tacker_visualize(CLegitTracker *t, const CvMat* canvas);
-
-const char* legit_tracker_get_name(CLegitTracker *t);
-
-void legit_set_property(CLegitTracker *t, int code, float value);
-
-float legit_get_property(CLegitTracker *t, int code);
-
-void legit_remove_property(CLegitTracker *t, int code);
-
-int legit_has_property(CLegitTracker *t, int code);
-
-int legit_toggle_debugging();
-
-#ifdef __cplusplus
-}
-#endif
-
 #endif

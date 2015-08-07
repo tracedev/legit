@@ -329,16 +329,16 @@ int Patches::add(Image& image, PatchType type, Point2f position, float weight)
   switch (type)
     {
     case HISTOGRAM:
-      pch = new HistogramPatch(count++, 10, bufferlimit, psize, psize);
+      pch = Ptr<Patch>(new HistogramPatch(count++, 10, bufferlimit, psize, psize));
       break;
     case RGBPIXEL:
-      pch = new RGBPatch(count++, 10, bufferlimit);
+      pch = Ptr<Patch>(new RGBPatch(count++, 10, bufferlimit));
       break;
     case HSPIXEL:
-      pch = new HSPatch(count++, 10, bufferlimit);
+      pch = Ptr<Patch>(new HSPatch(count++, 10, bufferlimit));
       break;
     case SSD:
-      pch = new SSDPatch(count++, 10, bufferlimit, psize, psize);
+      pch = Ptr<Patch>(new SSDPatch(count++, 10, bufferlimit, psize, psize));
       break;
     default:
       throw LegitException("Unknown type");

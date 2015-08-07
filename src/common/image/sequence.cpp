@@ -42,7 +42,6 @@ namespace legit
 namespace common
 {
 
-
 ////////////// Video file sequence
 
 VideoFileSequence::VideoFileSequence(const char* filenamein, int start, int end) : file_start(1), sequence_file(NULL)
@@ -50,7 +49,7 @@ VideoFileSequence::VideoFileSequence(const char* filenamein, int start, int end)
 
   cap.open(filenamein);
 
-  file_end = cap.get(CV_CAP_PROP_FRAME_COUNT) - 1;
+  file_end = cap.get(CAP_PROP_FRAME_COUNT) - 1;
   current_frame = 0;
 
   if(!cap.isOpened())
@@ -82,7 +81,7 @@ bool VideoFileSequence::read_frame(Mat& img)
 
   cap >> img;
 
-  current_frame = cap.get(CV_CAP_PROP_POS_FRAMES) - file_start + 1;
+  current_frame = cap.get(CAP_PROP_POS_FRAMES) - file_start + 1;
 
   if (current_frame >= size()) img.release();
 
@@ -113,7 +112,7 @@ int VideoFileSequence::skip(int position)
   position = MIN(size(), MAX(0, position));
 
   current_frame = position;
-  cap.set(CV_CAP_PROP_POS_FRAMES, position + file_start - 1);
+  cap.set(CAP_PROP_POS_FRAMES, position + file_start - 1);
 
   return current_frame;
 
@@ -121,13 +120,13 @@ int VideoFileSequence::skip(int position)
 
 int VideoFileSequence::width()
 {
-  return cap.get(CV_CAP_PROP_FRAME_WIDTH);
+  return cap.get(CAP_PROP_FRAME_WIDTH);
 
 }
 
 int VideoFileSequence::height()
 {
-  return cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+  return cap.get(CAP_PROP_FRAME_HEIGHT);
 
 }
 
@@ -145,8 +144,8 @@ CameraSequence::CameraSequence(int camera)
 
   //TODO: Make capture size configurable
   cap.open(camera);
-  cap.set(CV_CAP_PROP_FRAME_WIDTH, 320);
-  cap.set(CV_CAP_PROP_FRAME_HEIGHT, 240);
+  cap.set(CAP_PROP_FRAME_WIDTH, 320);
+  cap.set(CAP_PROP_FRAME_HEIGHT, 240);
 
   current_frame = 0;
 
@@ -195,13 +194,13 @@ int CameraSequence::skip(int position)
 
 int CameraSequence::width()
 {
-  return cap.get(CV_CAP_PROP_FRAME_WIDTH);
+  return cap.get(CAP_PROP_FRAME_WIDTH);
 
 }
 
 int CameraSequence::height()
 {
-  return cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+  return cap.get(CAP_PROP_FRAME_HEIGHT);
 
 }
 

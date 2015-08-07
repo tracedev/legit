@@ -40,7 +40,7 @@ FocusWrapper::FocusWrapper(Config& config, string id)
   if (!config.keyExists("focus.tracker"))
     throw LegitException("Unknown parent tracker type");
 
-  tracker = create_tracker(config.read<string>("focus.tracker"), config, id);
+  tracker = Ptr<Tracker>(create_tracker(config.read<string>("focus.tracker"), config, id));
 
   int fwidth = MAX(10, config.read<int>("focus.width", 150));
   int fheight = MAX(10, config.read<int>("focus.height", 150));

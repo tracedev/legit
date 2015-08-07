@@ -142,7 +142,7 @@ OnlineBoostingAlgorithm::~OnlineBoostingAlgorithm()
 //---------------------------------------------------------------------------
 bool
 OnlineBoostingAlgorithm::initialize(const cv::Mat & image, const ObjectTrackerParams& params,
-                                    const CvRect& init_bounding_box)
+                                    const cv::Rect& init_bounding_box)
 {
   // Import the image
   import_image(image);
@@ -253,11 +253,11 @@ OnlineBoostingAlgorithm::import_image(const cv::Mat & image)
   // Now copy it in appropriately as a gray-scale, 8-bit image
   if (image.channels() == 4)
     {
-      cv::cvtColor(image, image_, CV_RGBA2GRAY);
+      cv::cvtColor(image, image_, cv::COLOR_RGBA2GRAY);
     }
   else if (image.channels() == 3)
     {
-      cv::cvtColor(image, image_, CV_RGB2GRAY);
+      cv::cvtColor(image, image_, cv::COLOR_RGB2GRAY);
     }
   else if (image.channels() == 1)
     {
@@ -303,7 +303,7 @@ SemiOnlineBoostingAlgorithm::~SemiOnlineBoostingAlgorithm()
 //---------------------------------------------------------------------------
 bool
 SemiOnlineBoostingAlgorithm::initialize(const cv::Mat & image, const ObjectTrackerParams& params,
-                                        const CvRect& init_bounding_box)
+                                        const cv::Rect& init_bounding_box)
 {
   // Import the image
   import_image(image);
@@ -414,11 +414,11 @@ SemiOnlineBoostingAlgorithm::import_image(const cv::Mat & image)
   // Now copy it in appropriately as a gray-scale, 8-bit image
   if (image.channels() == 4)
     {
-      cv::cvtColor(image, image_, CV_RGBA2GRAY);
+      cv::cvtColor(image, image_, cv::COLOR_RGBA2GRAY);
     }
   else if (image.channels() == 3)
     {
-      cv::cvtColor(image, image_, CV_RGB2GRAY);
+      cv::cvtColor(image, image_, cv::COLOR_RGB2GRAY);
     }
   else if (image.channels() == 1)
     {
@@ -457,7 +457,7 @@ OnlineMILAlgorithm::~OnlineMILAlgorithm()
 //---------------------------------------------------------------------------
 bool
 OnlineMILAlgorithm::initialize(const cv::Mat & image, const ObjectTrackerParams& params,
-                               const CvRect& init_bounding_box)
+                               const cv::Rect& init_bounding_box)
 {
   import_image(image);
 
@@ -531,11 +531,11 @@ OnlineMILAlgorithm::import_image(const cv::Mat & image)
   // Now copy it in appropriately as a gray-scale, 8-bit image
   if (image.channels() == 4)
     {
-      cv::cvtColor(image, image_, CV_RGBA2GRAY);
+      cv::cvtColor(image, image_, cv::COLOR_RGBA2GRAY);
     }
   else if (image.channels() == 3)
     {
-      cv::cvtColor(image, image_, CV_RGB2GRAY);
+      cv::cvtColor(image, image_, cv::COLOR_RGB2GRAY);
     }
   else if (image.channels() == 1)
     {
@@ -568,7 +568,7 @@ LINEMODAlgorithm::~LINEMODAlgorithm()
 //---------------------------------------------------------------------------
 bool
 LINEMODAlgorithm::initialize(const cv::Mat & image, const ObjectTrackerParams& params,
-                             const CvRect& init_bounding_box)
+                             const cv::Rect& init_bounding_box)
 {
   // Return success
   return true;
@@ -638,7 +638,7 @@ ObjectTracker::~ObjectTracker()
 
 //---------------------------------------------------------------------------
 bool
-ObjectTracker::initialize(const cv::Mat & image, const CvRect& bounding_box)
+ObjectTracker::initialize(const cv::Mat & image, const cv::Rect& bounding_box)
 {
   // Initialize the tracker and if it works, set the flag that we're now initialized
   // to true so that update() can work properly.
