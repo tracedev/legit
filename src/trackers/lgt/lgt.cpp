@@ -48,7 +48,6 @@ LGTTracker::LGTTracker(Config& config, string inst) :
   local_optimization( 40, 40, 0, 5, 10, 0.001),
   motion(4, 2, 0)
 {
-  configuration = config;
   patch_scale =  1.0;
 
   patches_max =  6;

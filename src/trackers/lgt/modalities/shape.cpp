@@ -36,9 +36,9 @@ namespace tracker
 
 ModalityConvex::ModalityConvex(Config& config, string configbase) : Modality(config, configbase)
 {
-  margin = config.read<int>(configbase + ".margin", 10);
-  margin_diminish = CLAMP3(config.read<float>(configbase + ".diminish", 0.3f), 0, 0.9999f);
-  persistence = CLAMP3(config.read<float>(configbase + ".persistence", 0.5f), 0, 0.9999f);
+  margin = 10;
+  margin_diminish = CLAMP3(0.3f, 0, 0.9999f);
+  persistence = CLAMP3(0.7f, 0, 0.9999f);
   flush();
 }
 

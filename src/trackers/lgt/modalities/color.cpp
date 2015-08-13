@@ -70,11 +70,11 @@ ModalityColor3DHistogram::ModalityColor3DHistogram(Config& config, string config
   channels[0] = 0;
   channels[1] = 1;
   channels[2] = 2;
-  histSize[0] = config.read<int>(configbase + ".bins.first", 8);
-  histSize[1] = config.read<int>(configbase + ".bins.second", 8);
-  histSize[2] = config.read<int>(configbase + ".bins.third", 8);
+  histSize[0] = 16;
+  histSize[1] = 16;
+  histSize[2] = 4;
 
-  string cspace = config.read<string>(configbase + ".colorspace", "hsv");
+  string cspace = "hsv";
 
   if (cspace == "hsv")
     {
@@ -116,12 +116,12 @@ ModalityColor3DHistogram::ModalityColor3DHistogram(Config& config, string config
   background.create(3, histSize, CV_32F);
   model.create(3, histSize, CV_32F);
 
-  foreground_presistence = config.read<int>(configbase + ".persistence.foreground");
-  background_presistence = config.read<int>(configbase + ".persistence.background");
+  foreground_presistence = 0.95;
+  background_presistence = 0.5;
 
-  foreground_size = config.read<double>(configbase + ".region.foreground");
-  background_margin = config.read<int>(configbase + ".region.margin");
-  background_size = config.read<int>(configbase + ".region.background");
+  foreground_size = 0.7;
+  background_margin = 10;
+  background_size = 35;
 
 
 
@@ -206,7 +206,7 @@ void ModalityColor3DHistogram::update(Image& image, PatchSet* patchSet, Rect bou
 
   new_background += 1;
 
-  
+
 
 // Merging model with new data
 

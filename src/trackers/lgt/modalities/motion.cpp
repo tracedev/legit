@@ -42,15 +42,15 @@ namespace tracker
 ModalityMotionLK::ModalityMotionLK(Config& config, string configbase) : Modality(config, configbase), step(2), history(step, step), motion(step, step)
 {
 
-  block_size = config.read<int>(configbase + ".blocksize", 7);
-  aperture_size = config.read<int>(configbase + ".apperture", 7);
+  block_size = 7;
+  aperture_size = 7;
 
 // TODO: hardcoded
-  damping = config.read<int>(configbase + ".damping", 100);
-  persistence = config.read<double>(configbase + ".persistence", 0.5);
+  damping = 1;
+  persistence = 0.7;
 
-  levels = config.read<int>(configbase + ".lk.levels", 2);
-  window_size = config.read<int>(configbase + ".lk.window", 8);
+  levels = 2;
+  window_size = 8;
 
   float sigma = 0.3*(MOTION_LK_SIZE/2 - 1) + 0.8;
 

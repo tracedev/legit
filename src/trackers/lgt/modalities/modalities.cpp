@@ -37,46 +37,19 @@ namespace tracker
 Modalities::Modalities(Config& config)
 {
 
-  int cue = 1;
-  char cuename[16];
 
-  while (true)
-    {
-
-      sprintf(cuename, "cue%d", cue);
-
-      if (!config.keyExists(cuename))
-        break;
-
-      string cuetype = config.read<string>(cuename);
-
-      cue++;
+        modalities.push_back(Ptr<Modality>(new ModalityColor3DHistogram(config, "")));
 
 
+        modalities.push_back(Ptr<Modality>(new ModalityConvex(config, "cuename")));
 
-      if (cuetype == "colorhist")
-        {
-          modalities.push_back(Ptr<Modality>(new ModalityColor3DHistogram(config, cuename)));
-        }
-      else if (cuetype == "convex")
-        {
-          modalities.push_back(Ptr<Modality>(new ModalityConvex(config, cuename)));
-        }
-      else if (cuetype == "motionlk")
-        {
-          modalities.push_back(Ptr<Modality>(new ModalityMotionLK(config, cuename)));
-        }
-      else if (cuetype == "bounding")
-        {
-          modalities.push_back(Ptr<Modality>(new ModalityBounding(config, cuename)));
-        }
-      else if (cuetype == "none") { }
-      else
-        {
 
-        }
+        modalities.push_back(Ptr<Modality>(new ModalityMotionLK(config, "cuename")));
 
-    }
+
+      //  modalities.push_back(Ptr<Modality>(new ModalityBounding(config, cuename)));
+
+    
 
 
 
@@ -188,8 +161,8 @@ int Modalities::size()
 Modality::Modality(Config& config, string configbase)
 {
 
-  double weight = (config.keyExists(configbase + ".filter.weight")) ? config.read<double>(configbase + ".filter.weight", 0) : config.read<double>("cues.filter.weight", 0);
-  int age = (config.keyExists(configbase + ".filter.age")) ? config.read<int>(configbase + ".filter.weight", 0) : config.read<int>("cues.filter.age", 0);
+  double weight = 0.5;
+  int age = 0;
 
   reliablePatchesFilter = Ptr<ReliablePatchesFilter>(new ReliablePatchesFilter(weight, age));
 
