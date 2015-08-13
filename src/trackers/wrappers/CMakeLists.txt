@@ -1,7 +1,0 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-
-LEGIT_ADD_SOURCES(
-	focus.cpp
-)
-
-LEGIT_REGISTER_TRACKER(focus.h FocusWrapper wrappers)
