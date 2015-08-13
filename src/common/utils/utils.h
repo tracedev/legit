@@ -65,17 +65,7 @@ namespace legit
 namespace common
 {
 
-void printpoint(Point2f p);
 
-void printsize(cv::Size s);
-
-void printsize(Mat& A);
-
-void printrect(cv::Rect r);
-
-void printmat(Mat& A);
-
-void read_csv(Mat& mat, const char* file, char delimiter = ',');
 
 cv::Rect get_roi(Mat& m);
 
