@@ -19,7 +19,6 @@
 /* -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 4; tab-width: 4 -*- */
 
 #include "common/math/geometry.h"
-#include "common/utils/debug.h"
 
 #include "modalities.h"
 
@@ -53,7 +52,7 @@ Modalities::Modalities(Config& config)
 
       cue++;
 
-      DEBUGMSG("New cue of type %s \n", cuetype.c_str());
+
 
       if (cuetype == "colorhist")
         {
@@ -74,14 +73,13 @@ Modalities::Modalities(Config& config)
       else if (cuetype == "none") { }
       else
         {
-          DEBUGMSG("Warning: unknown cue type %s \n", cuename);
+
         }
 
     }
 
-  DEBUGMSG("Total cues: %d \n", size());
 
-  debugCanvas = get_canvas("modalities");
+
 
 }
 
@@ -122,7 +120,6 @@ void Modalities::probability(Image& image, Mat& p)
       return;
     }
 
-  debugCanvas->clear();
 
   Mat pmap;
   pmap.create(region.height, region.width, CV_32FC1);
@@ -132,26 +129,14 @@ void Modalities::probability(Image& image, Mat& p)
 
   bool usable = false;
 
-  if (debugCanvas->get_zoom() > 0)
-    {
-      Mat rgb = image.get_rgb();
-      debugCanvas->draw(rgb, modalityOffset);
-      debugCanvas->text(modalityOffset + cv::Point(10, 20), string("Original image"), COLOR_RED);
 
-      modalityOffset.x += region.width;
-      if (modalityOffset.x >= debugCanvas->width())
-        {
-          modalityOffset.x = 0;
-          modalityOffset.y += region.height;
-        }
-    }
 
   for (int i = 0; i < modalities.size(); i++)
     {
 
       if (!modalities[i]->usable())
         {
-          DEBUGMSG("Modality %d not usable \n", i+1);
+
           continue;
         }
 
@@ -159,20 +144,7 @@ void Modalities::probability(Image& image, Mat& p)
 
       if (pmap.empty()) continue;
 
-      if (debugCanvas->get_zoom() > 0)
-        {
-          char namestring[32];
-          sprintf(namestring, "Modality %d", i);
-          debugCanvas->draw(pmap, modalityOffset, IMAGE_SCALE);
-          debugCanvas->text(modalityOffset + cv::Point(10, 20), string(namestring), COLOR_RED);
 
-          modalityOffset.x += region.width;
-          if (modalityOffset.x >= debugCanvas->width())
-            {
-              modalityOffset.x = 0;
-              modalityOffset.y += region.height;
-            }
-        }
 
       p = p.mul(pmap);
       usable = true;
@@ -181,7 +153,6 @@ void Modalities::probability(Image& image, Mat& p)
   if (!usable)
     p.setTo(0);
 
-  debugCanvas->push();
 
 }
 
@@ -222,7 +193,6 @@ Modality::Modality(Config& config, string configbase)
 
   reliablePatchesFilter = Ptr<ReliablePatchesFilter>(new ReliablePatchesFilter(weight, age));
 
-  debugCanvas = get_canvas(config.read<string>(configbase + ".debug", ""));
 
 }
 

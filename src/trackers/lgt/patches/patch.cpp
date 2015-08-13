@@ -273,7 +273,7 @@ float SSDPatch::response(Image& image, Point position)
         }
     }
 
-//DEBUGMSG("%d %d %d %d %d %d %f %d\n", x1, x2, y1, y2, ox, oy, dist, c);
+
 
   return -(dist / ((x2 - x1) * (y2 - y1) * 255 * 255)) * 50;
 

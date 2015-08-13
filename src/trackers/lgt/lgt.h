@@ -28,7 +28,6 @@
 
 #include "common/utils/config.h"
 #include "common/utils/utils.h"
-#include "common/utils/debug.h"
 #include "common/utils/defs.h"
 #include "common/math/geometry.h"
 #include "common/math/statistics.h"
@@ -83,17 +82,17 @@ public:
 
   vector<cv::Point> get_patch_positions();
 
-  virtual void track(Image& image, bool announce, bool push, DebugOutput* debug = NULL);
+  virtual void track(Image& image, bool announce, bool push);
 
 protected:
 
-  virtual void stage_optimization(Image& image, bool announce, bool push, DebugOutput* debug);
+  virtual void stage_optimization(Image& image, bool announce, bool push);
 
-  virtual void stage_update_weights(Image& image, bool announce, bool push, DebugOutput* debug);
+  virtual void stage_update_weights(Image& image, bool announce, bool push);
 
-  virtual void stage_update_modalities(Image& image, bool announce, bool push, DebugOutput* debug);
+  virtual void stage_update_modalities(Image& image, bool announce, bool push);
 
-  virtual void stage_add_patches(Image& image, bool announce, bool push, DebugOutput* debug);
+  virtual void stage_add_patches(Image& image, bool announce, bool push);
 
   void notify_observers(int channel, void* data, int flags = 0);
 

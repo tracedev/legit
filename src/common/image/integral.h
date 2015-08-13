@@ -106,10 +106,6 @@ public:
   inline void sum(int x1, int y1, int x2, int y2, SimpleHistogram& hist)
   {
 
-    DEBUGGING
-    {
-      assert(hist.size == bins);
-    }
 
     uint32_t* dp = &(data[y2 * width + x2]);
     uint32_t* bp = &(data[y1 * width + x2]);

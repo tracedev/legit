@@ -16,23 +16,17 @@ LEGIT_ADD_SOURCES(
 	src/common/utils/utils.cpp
 		src/common/utils/config.cpp
 		src/common/utils/graphics.cpp
-		src/common/utils/debug.cpp
 		src/common/utils/string.cpp
 		src/common/image/histogram.cpp
-		src/common/image/sequence.cpp
 		src/common/image/image.cpp
 		src/common/image/integral.cpp
 		src/common/math/statistics.cpp
 		src/common/math/geometry.cpp
-		src/common/gui/gui.cpp
-		src/common/gui/window.cpp
 		src/common/canvas.cpp
 	    src/api/legit.cpp
 	    src/observers.cpp
 		src/tracker.cpp
 )
-
-ADD_SUBDIRECTORY(src/common/platform)
 
 SET(BUILD_DEBUG TRUE CACHE BOOL "Enable debug support")
 

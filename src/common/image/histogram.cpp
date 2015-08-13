@@ -28,7 +28,6 @@
 /* -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 4; tab-width: 4 -*- */
 
 #include "common/image/histogram.h"
-#include "common/utils/debug.h"
 
 namespace legit
 {

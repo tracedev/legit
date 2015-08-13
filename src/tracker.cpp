@@ -29,7 +29,6 @@
 
 #include "tracker.h"
 #include "common/utils/defs.h"
-#include "common/gui/gui.h"
 
 #ifdef BUILTIN_TRACKERS
 #include BUILTIN_TRACKERS
@@ -66,7 +65,7 @@ Tracker* create_tracker(string type, Config& config, string id)
   TrackerRegistry& reg = getTrackerRegistry();
   TrackerRegistry::iterator it = reg.find(type);
 
-  DEBUGMSG("Creating tracker %s\n", type.c_str());
+
 
   if (it != reg.end())
     {
@@ -77,7 +76,7 @@ Tracker* create_tracker(string type, Config& config, string id)
   if (!ptr)
     throw LegitException("Unknown tracker type");
 
-  DEBUGMSG("Tracking algorithm: %s\n", type.c_str());
+
 
   return ptr;
   /*
@@ -85,7 +84,7 @@ Tracker* create_tracker(string type, Config& config, string id)
           int fwidth = MAX(10, config.read<int>("tracker.focus.width", 150));
           int fheight = MAX(10, config.read<int>("tracker.focus.height", 150));
 
-          DEBUGMSG("Focused wrapper enabled (%d x %d)\n", fwidth, fheight);
+
 
           return new ProxyTracker(ptr, Size(fwidth, fheight));
       } else {

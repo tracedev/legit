@@ -179,7 +179,7 @@ private:
     TrackerRegistry& reg = getTrackerRegistry();
     CreateTrackerFunc func = createTracker<T>;
 
-    DEBUGMSG("Registering tracker for name %s\n", name.c_str());
+
 
     std::pair<TrackerRegistry::iterator, bool> ret =
       reg.insert(TrackerRegistry::value_type(name, func));

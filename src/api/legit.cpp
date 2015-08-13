@@ -29,7 +29,6 @@
 
 #include "api/legit.h"
 #include "tracker.h"
-#include "common/utils/debug.h"
 
 using namespace legit::tracker;
 

@@ -31,7 +31,6 @@
 #define LEGIT_BUFFER
 
 #include <iostream>
-#include "debug.h"
 
 using namespace std;
 
@@ -79,7 +78,7 @@ public:
     end++;
     if (end < _capacity)
       {
-//DEBUGMSG("%d %d %d \n", end, start, size());
+
         buffer[end] = value;
         if (end == start)
           {
@@ -104,7 +103,7 @@ public:
 
             delete [] buffer;
             buffer = newbuffer;
-//DEBUGMSG("Reallocated \n");
+
 //                buffer = (T*) realloc(buffer, sizeof(T) * newcapacity);
             _capacity = newcapacity;
             buffer[end] = value;

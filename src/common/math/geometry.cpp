@@ -29,7 +29,6 @@
 
 #include "common/math/geometry.h"
 #include "common/utils/utils.h"
-#include "common/utils/debug.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -582,7 +581,7 @@ void decompose_affine_transformation(Matrix3f M, Point2f* translation, float* ro
 //    *rotation = atan2(M.m01 / *scaleX, M.m00 / *scaleX);
 
 
-  DEBUGMSG("Translation %f,%f, rotation %f, scale %f, %f \n", (*translation).x, (*translation).y, *rot, *scaleX, *scaleY);
+
 
 }
 

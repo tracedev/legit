@@ -1,7 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-ADD_SUBDIRECTORY(basic/)
-
 
 SET(BUILD_TRACKER_LGT TRUE CACHE BOOL "Include the LGT tracker implementation")
 

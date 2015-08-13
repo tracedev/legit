@@ -31,7 +31,6 @@
 #include <fstream>
 #include <opencv2/highgui/highgui.hpp>
 #include "utils.h"
-#include "debug.h"
 
 namespace legit
 {
@@ -321,7 +320,7 @@ const string describe_mat_type(int cvtype)
 
 LegitException::LegitException(std::string ss) : s(ss)
 {
-  DEBUGMSG("Throwing Legit exception: %s \n", ss.c_str());
+
 }
 
 const char* LegitException::what() const throw()

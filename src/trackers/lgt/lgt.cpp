@@ -20,7 +20,7 @@
 
 #include "lgt.h"
 #include "common/utils/utils.h"
-
+#include "common/canvas.h"
 namespace legit
 {
 
@@ -119,7 +119,7 @@ void LGTTracker::initialize(Image& image, cv::Rect region)
 
   int proposed_patch_size = 6; // ceil(sqrt((double)(region.width * region.height))*0.15) ;
 
-  DEBUGMSG("Proposed patch size: %d\n", proposed_patch_size);
+
 
   patches.set_patch_size(proposed_patch_size);
   // FIXME int count = (int) round( (region.width * region.height) / pow((double)3 * patches.get_radius(), 2));
@@ -131,7 +131,7 @@ void LGTTracker::initialize(Image& image, cv::Rect region)
   int count = (int) round( (region.width * region.height) / pow((double)3 * patches.get_radius(), 2));// Woodoo2?
   */
 
-  DEBUGMSG("Initialion suggests %d patches \n", count);
+
 
   int sx, sy;
 
@@ -155,7 +155,7 @@ void LGTTracker::initialize(Image& image, cv::Rect region)
 
   count = sx * sy;
 
-  DEBUGMSG("Initialize %d patches in grid %dx%d \n", count, sx, sy);
+
 
   int dx = (region.width - 2 * patches.get_radius()) / (sx-1);
   int dy = (region.height - 2 * patches.get_radius()) / (sy-1);
@@ -163,7 +163,7 @@ void LGTTracker::initialize(Image& image, cv::Rect region)
   Mat_<float> positions = Mat_<float>(count, 3);
   int k = 0;
 
-  DEBUGMSG("Initializing %d patches (%d x %d) \n", count, sx, sy);
+
 
   for (int i = 0; i < sx; i++)
     {
@@ -222,7 +222,7 @@ void LGTTracker::initialize(Image& image, Mat points)
         median_threshold = MAX(median_threshold, median(m));
     }*/
 
-  DEBUGMSG("Median threshold: %f \n", median_threshold);
+
 
   modalities.flush();
 
@@ -285,7 +285,7 @@ void LGTTracker::update(Image& image)
 
 }
 
-void LGTTracker::track(Image& image, bool announce, bool push, DebugOutput* debug)
+void LGTTracker::track(Image& image, bool announce, bool push)
 {
 
   if (announce) notify_stage(STAGE_BEGIN);
@@ -307,7 +307,7 @@ void LGTTracker::track(Image& image, bool announce, bool push, DebugOutput* debu
 
   if (announce) notify_observers(OBSERVER_CHANNEL_STRUCTURE, &patches);
 
-  stage_optimization(image, announce, push, debug);
+  stage_optimization(image, announce, push);
 
   /********************************************************************************
   *
@@ -315,71 +315,15 @@ void LGTTracker::track(Image& image, bool announce, bool push, DebugOutput* debu
   *
   *********************************************************************************/
 
-  stage_update_weights(image, announce, push, debug);
+  stage_update_weights(image, announce, push);
 
-#ifdef BUILD_DEBUG
-  {
-    Canvas* canvas = get_canvas("weights");
-    if (canvas->get_zoom() > 0)
-      {
-        Mat gray = image.get_gray();
-        canvas->draw(gray);
 
-        for (int j = 0; j < patches.size(); j++)
-          {
-            Point2f p = patches.get_position(j);
-            int radius = MAX(1, patches.get_weight(j) * 8);
-            cv::Scalar color(255 * patches.get_weight(j), 0, 0);
-            canvas->circle(p, radius, color, -1);
-          }
-
-        canvas->push(2);
-      }
-  }
-#endif
 
   // recalculate center, update Kalman
   center = patches.mean_position();
   motion.correct((Mat_<float>(2, 1) << center.x, center.y));
 
-#ifdef BUILD_DEBUG
-  {
-    Canvas* canvas = get_canvas("motion");
-    if (canvas->get_zoom() > 0)
-      {
-        Mat statePost = motion.statePost ;
-        Mat errorCovPost = motion.errorCovPost ;
-        Point2f mean, pred ;
-        Matrix2f cov ;
-        mean.x = statePost.at<float>(0,0) ;
-        mean.y = statePost.at<float>(1,0) ;
-        cov.m00 = errorCovPost.at<float>(0,0) ;
-        cov.m11 = errorCovPost.at<float>(1,1) ;
-        cov.m01 = errorCovPost.at<float>(0,1) ;
-        cov.m10 = errorCovPost.at<float>(1,0) ;
 
-        Point offset = mean - cv::Point(canvas->width(), canvas->height()) / (2 * canvas->get_zoom());
-
-        ProxyCanvas proxy(canvas, -offset);
-
-        Mat gray = image.get_gray();
-        proxy.draw(gray);
-
-        proxy.ellipse(mean, cov, Scalar(0, 0, 255));
-
-        //proxy.rectangle(region(), Scalar(0, 255, 0), 2);
-
-        float ppx = statePost.at<float>(2, 0) ;
-        float ppy = statePost.at<float>(3, 0) ;
-
-        pred.x = mean.x + statePost.at<float>(2, 0) * motion.transitionMatrix.at<float>(0, 2) ;
-        pred.y = mean.y + statePost.at<float>(3, 0) * motion.transitionMatrix.at<float>(1, 3) ;
-        proxy.line(mean, pred, Scalar(100, 255, 120), 2);
-
-        proxy.push();
-      }
-  }
-#endif
 
   /********************************************************************************
   *
@@ -387,7 +331,7 @@ void LGTTracker::track(Image& image, bool announce, bool push, DebugOutput* debu
   *
   *********************************************************************************/
 
-  stage_update_modalities(image, announce, push, debug);
+  stage_update_modalities(image, announce, push);
 
   /********************************************************************************
   *
@@ -395,9 +339,9 @@ void LGTTracker::track(Image& image, bool announce, bool push, DebugOutput* debu
   *
   *********************************************************************************/
 
-  stage_add_patches(image, announce, push, debug);
+  stage_add_patches(image, announce, push);
 
-  DEBUGMSG("Patch set size: %d (capacity: %.2f)\n", patches.size(), patches_capacity);
+
 
   if (announce) notify_stage(STAGE_END);
 
@@ -405,7 +349,7 @@ void LGTTracker::track(Image& image, bool announce, bool push, DebugOutput* debu
 
 }
 
-void LGTTracker::stage_optimization(Image& image, bool announce, bool push, DebugOutput* debug)
+void LGTTracker::stage_optimization(Image& image, bool announce, bool push)
 {
 
   /********************************************************************************
@@ -462,9 +406,9 @@ void LGTTracker::stage_optimization(Image& image, bool announce, bool push, Debu
 
   if (patches.size() > 4)
     {
-      DEBUGMSG("Delaunay start\n");
+
       DelaunayConstraints* cn = new DelaunayConstraints(patches);
-      DEBUGMSG("Delaunay stop\n");
+
 
       cross_entropy_local_refine(image, patches,*cn, optimization_local_M,
                                  lambda_geometry, lambda_visual, local_optimization, status);
@@ -484,7 +428,7 @@ void LGTTracker::stage_optimization(Image& image, bool announce, bool push, Debu
 
 }
 
-void LGTTracker::stage_update_weights(Image& image, bool announce, bool push, DebugOutput* debug)
+void LGTTracker::stage_update_weights(Image& image, bool announce, bool push)
 {
 
   if (announce) notify_stage(STAGE_UPDATE_WEIGHTS);
@@ -556,7 +500,7 @@ void LGTTracker::stage_update_weights(Image& image, bool announce, bool push, De
             }
           if (selection.size() > 1)
             {
-              DEBUGMSG("Merging %d patches\n", (int)selection.size());
+
               patches.merge(image, selection, patch_type);
               break;
             }
@@ -572,10 +516,10 @@ void LGTTracker::stage_update_weights(Image& image, bool announce, bool push, De
   // remove patches
   WeightLowerFilter remove_filter(weight_remove_threshold);
   int removed = patches.remove(remove_filter);
-  DEBUGMSG("Removing %d patches\n", removed);
+
 }
 
-void LGTTracker::stage_update_modalities(Image& image, bool announce, bool push, DebugOutput* debug)
+void LGTTracker::stage_update_modalities(Image& image, bool announce, bool push)
 {
 
   if (announce) notify_stage(STAGE_UPDATE_MODALITIES);
@@ -584,7 +528,7 @@ void LGTTracker::stage_update_modalities(Image& image, bool announce, bool push,
 
 }
 
-void LGTTracker::stage_add_patches(Image& image, bool announce, bool push, DebugOutput* debug)
+void LGTTracker::stage_add_patches(Image& image, bool announce, bool push)
 {
 
   if (announce) notify_stage(STAGE_ADD_PATCHES);
@@ -598,12 +542,12 @@ void LGTTracker::stage_add_patches(Image& image, bool announce, bool push, Debug
 
   int patches_new = MAX( MIN((int)round(patches_capacity) - (float)patches.size() + 1, patches_max - patches.size()),  patches_min - patches.size());
 
-  DEBUGMSG("%f %d %d\n", patches_capacity, patches.size(), patches_max);
+
 
   Mat mask;
   patch_create(mask, (float)patches.get_patch_size() * addition_distance, (float)patches.get_patch_size() * addition_distance, PATCH_CONE, FLAG_INVERT);
 
-  DEBUGMSG("Adding %d patches \n", patches_new);
+
 
   if (patches_new > 0)
     {
@@ -648,7 +592,7 @@ void LGTTracker::stage_add_patches(Image& image, bool announce, bool push, Debug
               if (map.at<float>(p.y, p.x) < 0.00001)
                 break;
 
-              DEBUGMSG("Adding patch to %d,%d (probability %f)\n", p.x, p.y, map.at<float>(p.y, p.x));
+
 
               // mask again
               patch_operation(map, mask, p, OPERATION_MULTIPLY);

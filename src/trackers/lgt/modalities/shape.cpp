@@ -124,8 +124,6 @@ void ModalityConvex::update(Image& image, PatchSet* patchSet, Rect bounds)
 
   history = history * persistence + temp * (1.0f - persistence);
 
-  debugCanvas->draw(history);
-  debugCanvas->push();
 
 }
 

@@ -123,7 +123,7 @@ ModalityColor3DHistogram::ModalityColor3DHistogram(Config& config, string config
   background_margin = config.read<int>(configbase + ".region.margin");
   background_size = config.read<int>(configbase + ".region.background");
 
-  debugCanvas = get_canvas(config.read<string>(configbase + ".debug", ""));
+
 
   flush();
 }
@@ -178,13 +178,6 @@ void ModalityColor3DHistogram::update(Image& image, PatchSet* patchSet, Rect bou
 
   calcHist(arrays, 1, channels, mask, new_foreground, 3, histSize, ranges, true, false);
 
-  if (debugCanvas->get_zoom() > 0)
-    {
-      Mat masked;
-      image.get_gray().copyTo(masked);
-      masked = masked.mul(mask);
-      debugCanvas->draw(masked, Point(0,0), IMAGE_STRETCH);
-    }
 
   calcHist(arrays, 1, channels, mask, new_foreground, 3, histSize, ranges, true, false);
 
@@ -213,13 +206,7 @@ void ModalityColor3DHistogram::update(Image& image, PatchSet* patchSet, Rect bou
 
   new_background += 1;
 
-  if (debugCanvas->get_zoom() > 0)
-    {
-      Mat masked;
-      image.get_gray().copyTo(masked);
-      masked = masked.mul(mask);
-      debugCanvas->draw(masked, Point(0,0), IMAGE_STRETCH);
-    }
+  
 
 // Merging model with new data
 

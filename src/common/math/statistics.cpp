@@ -32,7 +32,6 @@
 //#include "math.h"
 #include "common/math/statistics.h"
 #include "common/utils/utils.h"
-#include "common/utils/debug.h"
 
 using namespace legit;
 
@@ -439,7 +438,7 @@ double quantile(vector<double>& m, int q, int r)
   //double k = pos - i;
   double quantile = 0;
 
-  //DEBUGMSG("%f %f %d\n", pos, k, i);
+
 
   /* if (k != 0)
        quantile = (d[i-1] * (k) + d[i] * (1-k));

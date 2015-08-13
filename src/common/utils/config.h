@@ -76,7 +76,6 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include "common/utils/debug.h"
 
 using namespace std;
 
@@ -150,10 +149,8 @@ public:
   vector<string> keys();
 
   // Write or read configuration
-  friend std::ostream& operator<<( std::ostream& os, const Config& cf );
   friend std::istream& operator>>( std::istream& is, Config& cf );
 
-  void load_config(string file_name);
 
 protected:
   template<class T> static string T_as_string( const T& t );
@@ -161,6 +158,7 @@ protected:
   static void trim( string& s );
 
   void load_config(std::istream& is, const char* context_path);
+
 
 // Exception types
 public:
@@ -251,7 +249,7 @@ T Config::read( const string& key, const T& value ) const
   mapci p = myContents.find(key);
   if( p == myContents.end() )
     {
-      //DEBUGMSG("Warning: config key %s not found, using default value!\n", key.c_str());
+
       return value;
     }
   return string_as_T<T>( p->second );
@@ -283,7 +281,7 @@ bool Config::readInto( T& var, const string& key, const T& value ) const
     var = string_as_T<T>( p->second );
   else
     {
-      //DEBUGMSG("Warning: config key %s not found, using default value!\n", key.c_str());
+
       var = value;
     }
   return found;

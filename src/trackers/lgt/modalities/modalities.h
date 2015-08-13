@@ -27,7 +27,6 @@
 #include "common/utils/config.h"
 #include "common/utils/utils.h"
 #include "common/utils/defs.h"
-#include "common/gui/gui.h"
 
 using namespace cv;
 using namespace std;
@@ -72,7 +71,6 @@ protected:
 
   Ptr<ReliablePatchesFilter> reliablePatchesFilter;
 
-  Canvas* debugCanvas;
 
 };
 
@@ -98,7 +96,6 @@ protected:
 
   vector<Ptr<Modality> > modalities;
 
-  Canvas* debugCanvas;
 
 };
 

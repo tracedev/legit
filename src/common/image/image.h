@@ -31,8 +31,8 @@
 #define _LEGIT_IMAGE_H
 
 #include "common/utils/utils.h"
-#include "common/image/sequence.h"
 #include "common/image/integral.h"
+#include "common/utils/defs.h"
 
 #define IMAGE_FORMAT_GRAY 0
 #define IMAGE_FORMAT_RGB 1
@@ -60,12 +60,6 @@ public:
   Image(Image& image, cv::Rect region);
 
   ~Image();
-
-  void capture(Sequence* capture);
-
-  void load(const std::string& path);
-
-  void save(const std::string& path);
 
   void update(Mat& image);
 

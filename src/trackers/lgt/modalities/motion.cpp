@@ -58,11 +58,10 @@ ModalityMotionLK::ModalityMotionLK(Config& config, string configbase) : Modality
 //  GaussianBlur(CV_32F,CV_32F, Size(MOTION_LK_SIZE, MOTION_LK_SIZE), sigma, 0)
 
 
-  DEBUGMSG("Motion LK: sigma %f, size %d\n", sigma, MOTION_LK_SIZE);
+
 
   flush();
 
-  debugCanvas = get_canvas(config.read<string>(configbase + ".debug", ""));
 
 }
 
@@ -157,16 +156,7 @@ void ModalityMotionLK::update(Image& image, PatchSet* patchSet, Rect bounds)
 
   map *= persistence;
 
-#ifdef BUILD_DEBUG
 
-  ProxyCanvas proxyDebug(debugCanvas);
-  if (debugCanvas->get_zoom() > 0)
-    {
-      Point proxyOffset = patches->mean_position() - cv::Point(debugCanvas->width(), debugCanvas->height()) / (2 * debugCanvas->get_zoom());
-      proxyDebug.set_offset(-proxyOffset);
-      proxyDebug.draw(*img1);
-    }
-#endif
 
   //map.setTo(0);
   map += 0.000001;
@@ -182,34 +172,19 @@ void ModalityMotionLK::update(Image& image, PatchSet* patchSet, Rect bounds)
       Point2f predictedMotion = points[i] - prediction[i];
 
       float norm = exp(- distance(predictedMotion - referenceMotion) / damping);
-      //DEBUGMSG("%f \n", norm);
-//DEBUGMSG("%d x %d : %f %f %f \n", p.x, p.y, predictedMotion.x, predictedMotion.y, norm);
+
+
       map.at<float>(p.y, p.x) += norm * (1 - persistence);
 
-#ifdef BUILD_DEBUG
-      if (debugCanvas->get_zoom() > 0)
-        {
-          proxyDebug.rectangle(points[i] - Point2f(1,1), points[i] + Point2f(1,1), COLOR_BLUE);
-          proxyDebug.line(points[i], prediction[i], COLOR_RED);
-          proxyDebug.circle(points[i], norm * 10, COLOR_GREEN);
-        }
-#endif
+
     }
 
   double max, min;
   minMaxLoc(map, &min, &max, NULL, NULL, Mat());
 
-  DEBUGMSG(" %f %f \n", min, max);
 
-#ifdef BUILD_DEBUG
-  if (debugCanvas->get_zoom() > 0)
-    {
-      Point2f mean = patches->mean_position();
-      proxyDebug.rectangle(mean - Point2f(1,1), mean + Point2f(1,1), COLOR_GREEN);
-      proxyDebug.line(mean, mean - referenceMotion, COLOR_BLACK);
-      proxyDebug.push();
-    }
-#endif
+
+
 }
 
 bool ModalityMotionLK::usable()

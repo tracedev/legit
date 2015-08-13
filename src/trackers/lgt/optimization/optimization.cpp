@@ -18,9 +18,6 @@
 ********************************************************************/
 /* -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 4; tab-width: 4 -*- */
 
-#include "common/utils/debug.h"
-#include "common/gui/gui.h"
-
 #include "optimization.h"
 #include "../external/delaunay.h"
 

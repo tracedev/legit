@@ -57,12 +57,7 @@ Image::Image(int width, int height) : offset(0, 0), integral_image(NULL), inthis
 
 }
 
-Image::Image(const std::string& path) : offset(0, 0), integral_image(NULL), inthist16(NULL), inthist32(NULL)
-{
 
-  load(path);
-
-}
 
 Image::Image(Mat& src) : offset(0, 0), integral_image(NULL), inthist16(NULL), inthist32(NULL)
 {
@@ -86,64 +81,7 @@ Image::~Image()
 
 }
 
-void Image::capture(Sequence* capture)
-{
 
-  reset();
-
-  capture->read_frame(formats[IMAGE_FORMAT_RGB]);
-
-  if (formats[IMAGE_FORMAT_RGB].data)
-    {
-      has_format[IMAGE_FORMAT_RGB] = true;
-    }
-
-  offset = Point2i(0, 0);
-
-  update_size();
-}
-
-void Image::load(const std::string& path)
-{
-
-  reset();
-
-  Mat m = imread(path);
-
-  if (m.channels() == 1)
-    {
-      update(m, IMAGE_FORMAT_GRAY);
-    }
-  else if (m.channels() == 3)
-    {
-      update(m, IMAGE_FORMAT_RGB);
-    }
-
-  update_size();
-}
-
-void Image::save(const std::string& path)
-{
-
-  if (empty())
-    return;
-
-  Mat rgb = get_gray();
-
-#ifdef IOS
-
-  throw LegitException("Saving image on IOS currently not supported");
-  //cvSaveImage( path.c_str(), rgb, NULL);
-
-#else
-
-  vector<int> params;
-
-  imwrite(path, rgb, params);
-
-#endif
-
-}
 
 void Image::update(Mat& src)
 {

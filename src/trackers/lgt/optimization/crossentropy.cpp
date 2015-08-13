@@ -19,7 +19,6 @@
 /* -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 4; tab-width: 4 -*- */
 
 #include "crossentropy.h"
-#include "common/gui/gui.h"
 #include "common/utils/defs.h"
 
 namespace legit
@@ -180,11 +179,11 @@ void cross_entropy_global_move(Image& image, PatchSet& patches, Matrix& mean, Ma
 
   if (i < params.iterations)
     {
-      DEBUGMSG("Global iterations: %d\n", i);
+
     }
   else
     {
-      DEBUGMSG("Warning: global optimization did not converge! \n");
+
     }
 
 }
@@ -217,9 +216,7 @@ void cross_entropy_global_affine(Image& image, PatchSet& patches, Matrix& mean, 
   region.x = -region.width / 2;
   region.y = -region.height / 2;
 
-#ifdef BUILD_DEBUG
-  Canvas* debug = get_canvas("optimization");
-#endif
+
 
   /*
   	float sx_min, sx_max, sy_min, sy_max ;
@@ -331,26 +328,6 @@ void cross_entropy_global_affine(Image& image, PatchSet& patches, Matrix& mean, 
 
       double det = globalC.at<double>(0, 0) * globalC.at<double>(1, 1) - globalC.at<double>(1, 0) * globalC.at<double>(0, 1);
 
-#ifdef BUILD_DEBUG
-      if (debug->get_zoom() > 0)
-        {
-          Mat gray = image.get_gray();
-          debug->draw(gray);
-
-          Matrix3f A = simple_affine_transformation(globalM.at<double>(0, 0), globalM.at<double>(0, 1),
-                       globalM.at<double>(0, 2), globalM.at<double>(0, 3), globalM.at<double>(0, 4));
-          for (int j = 0; j < patches.size(); j++)
-            {
-              Point2f p = transform_point(status.get_position(j), A, center);
-              debug->cross(p, COLOR_RED);
-            }
-
-          debug->text(cv::Point(3, 13), string("Global optimization, step: ") + as_string(i), COLOR_RED);
-
-          debug->push(10);
-
-        }
-#endif
 
       if (det < params.terminate || samples_count >= params.max_samples)
         {
@@ -377,11 +354,11 @@ void cross_entropy_global_affine(Image& image, PatchSet& patches, Matrix& mean, 
 
   if (i < params.iterations)
     {
-      DEBUGMSG("Global iterations: %d\n", i);
+
     }
   else
     {
-      DEBUGMSG("Warning: global optimization did not converge! \n");
+
     }
 }
 
@@ -562,11 +539,11 @@ void cross_entropy_global_affine2(OptimizationStatus& status, ResponseFunction& 
 
   if (i < params.iterations)
     {
-      DEBUGMSG("Global iterations: %d\n", i);
+
     }
   else
     {
-      DEBUGMSG("Warning: global optimization did not converge! \n");
+
     }
 }
 
@@ -616,7 +593,7 @@ void cross_entropy_global_affine2(ResponseMaps& patches, Matrix& mean, Matrix& c
                         Point2f tp = transform_point(patches.get_relative_position(j, center), A);
                         tp.x += center.x; tp.y += center.y;
                         double c = exp(- patches.response(j, tp));
-                        DEBUGMSG("%d - %d %f \n", i, j, c);
+
                     }
                 }
             sampled_positions[k] = response;
@@ -653,7 +630,7 @@ void cross_entropy_global_affine2(ResponseMaps& patches, Matrix& mean, Matrix& c
                         Point2f tp = transform_point(patches.get_relative_position(j, center), A);
                         tp.x += center.x; tp.y += center.y;
                         double c = exp(- patches.response(j, tp));
-                        DEBUGMSG("%d - %d %f \n", i, j, c);
+
                     }
                 }
 
@@ -669,7 +646,7 @@ void cross_entropy_global_affine2(ResponseMaps& patches, Matrix& mean, Matrix& c
             Mat r = global_elite_samples.row(j);
             global_samples.row(sampled_positions[j].index).copyTo(r);
             global_elite_weights(j, 0) = sampled_positions[j].cost;
-            DEBUGMSG("%d %d - %f \n", i, j, sampled_positions[j].cost);
+
         }
 
         if (global_elite_weights(0, 0) == 0) global_elite_weights.setTo(1);
@@ -701,9 +678,9 @@ void cross_entropy_global_affine2(ResponseMaps& patches, Matrix& mean, Matrix& c
 	delete [] sampled_positions;
 
     if (i < params.iterations) {
-        DEBUGMSG("Global iterations: %d\n", i);
+
     } else {
-        DEBUGMSG("Warning: global optimization did not converge! \n");
+
     }
 }
 */
@@ -737,9 +714,6 @@ void cross_entropy_local_refine(Image& image, PatchSet& patches, Constraints& co
   vector<Point2f> affine_to;
   vector<float> affine_weights;
 
-#ifdef BUILD_DEBUG
-  Canvas* debug = get_canvas("optimization");
-#endif
 
   if (patches.size() < 4) return;
 
@@ -764,7 +738,7 @@ void cross_entropy_local_refine(Image& image, PatchSet& patches, Constraints& co
       neighborhoods.push_back(vector<NeighbourConstraint>());
     }
 
-  DEBUGMSG("Locally fixed patches: %d\n", fixed);
+
 
   for (i = 0; i < patches.size(); i++)
     {
@@ -839,14 +813,6 @@ void cross_entropy_local_refine(Image& image, PatchSet& patches, Constraints& co
               local_sampled_positions[s].cost = exp(- patches.response(image, p, tp) * lambda_visual) * exp(-d * lambda_geometry);
               local_sampled_positions[s].index = s;
 
-              DEBUGGING
-              {
-                if (isnan(local_sampled_positions[s].cost ) || local_sampled_positions[s].cost == 0)
-                  {
-                    DEBUGMSG("%d %d %d - %f %f, %f %f - %f \n", i, p, s, tp.x, tp.y, neighborhoodSuggest.x, neighborhoodSuggest.y, d);
-                    local_sampled_positions[s].cost = 0;
-                  }
-              }
             }
 
           qsort(local_sampled_positions, samples, sizeof(PatchCostPair), compare_patch_cost_pair);
@@ -883,32 +849,6 @@ void cross_entropy_local_refine(Image& image, PatchSet& patches, Constraints& co
               done[p] = true;
             }
 
-#ifdef BUILD_DEBUG
-
-          if (debug->get_zoom() > 0)
-            {
-              Mat gray = image.get_gray();
-              debug->draw(gray);
-
-              Point2f p1 = localM[p];
-              for (int n = 0; n < neighborhoods[p].size(); n++)
-                {
-                  Point2f p2 = localM[neighborhoods[p][n].index];
-                  debug->line(p1, p2, COLOR_RED);
-                }
-
-              for (int j = 0; j < patches.size(); j++)
-                {
-                  Point2f p = localM[j];
-                  debug->cross(p, COLOR_GREEN);
-                }
-
-              debug->text(cv::Point(3, 13), string("Local optimization, step: ") + as_string(i), COLOR_RED);
-
-
-              debug->push();
-            }
-#endif
 
         }
 
@@ -925,13 +865,13 @@ void cross_entropy_local_refine(Image& image, PatchSet& patches, Constraints& co
 
   if (i < params.iterations)
     {
-      DEBUGMSG("Local iterations: %d\n", i);
+
     }
   else
     {
       int converged = 0;
       for (int j = 0; j < patches.size(); j++) converged+= done[j] ? 1 : 0;
-      DEBUGMSG("Warning: local optimization did not converge entierly (%d/%d) \n", converged, patches.size());
+
     }
 
   delete [] localM;
@@ -1012,7 +952,7 @@ void cross_entropy_local_refine2(Image& image, PatchSet& patches, Constraints& c
                 continue;
             else alldone = false;
 
-            //DEBUGMSG("iteration %d, patch %d \n", i, p);
+
 
             tempM << localM[p].x, localM[p].y;
             tempC = localC[p];
@@ -1056,7 +996,7 @@ void cross_entropy_local_refine2(Image& image, PatchSet& patches, Constraints& c
                 local_sampled_positions[s].index = s;
 
                 if (isnan(local_sampled_positions[s].cost ) || local_sampled_positions[s].cost == 0) {
-                    DEBUGMSG("%d %d %d - %f %f, %f %f - %f \n", i, p, s, tp.x, tp.y, neighborhoodSuggest.x, neighborhoodSuggest.y, d);
+
     nanproblem = true;
                 }
 
@@ -1110,11 +1050,11 @@ void cross_entropy_local_refine2(Image& image, PatchSet& patches, Constraints& c
 
 
     if (i < params.iterations) {
-        DEBUGMSG("Local iterations: %d\n", i);
+
     } else {
         int converged = 0;
         for (int j = 0; j < patches.size(); j++) converged+= done[j] ? 1 : 0;
-        DEBUGMSG("Warning: local optimization did not converge entierly (%d/%d) \n", converged, patches.size());
+
     }
 
     delete [] localM;

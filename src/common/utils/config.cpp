@@ -29,7 +29,6 @@
 
 #include "common/utils/config.h"
 #include "common/utils/utils.h"
-#include "common/platform/filesystem.h"
 
 using std::string;
 
@@ -96,20 +95,6 @@ vector<string> Config::keys()
   return k;
 }
 
-std::ostream& operator<<( std::ostream& os, const Config& cf )
-{
-  // Save a Config to os
-  for( Config::mapci p = cf.myContents.begin();
-       p != cf.myContents.end();
-       ++p )
-    {
-      os << p->first << " " << cf.myDelimiter << " ";
-      os << p->second << std::endl;
-    }
-  return os;
-}
-
-
 std::istream& operator>>( std::istream& is, Config& cf )
 {
   // Load a Config from is
@@ -120,19 +105,6 @@ std::istream& operator>>( std::istream& is, Config& cf )
 
 }
 
-void Config::load_config(string file_name)
-{
-
-  ifstream in_file( file_name.c_str() , ifstream::in );
-  string context = path_parent(file_name);
-
-  if (in_file)
-    {
-      load_config(in_file, context.c_str());
-      in_file.close();
-    }
-
-}
 
 void Config::load_config(std::istream& is, const char* context_path)
 {
@@ -166,45 +138,7 @@ void Config::load_config(std::istream& is, const char* context_path)
       // Check for end of file sentry
       if( sentry != "" && line.find(sentry) != string::npos ) return;
 
-      if( special != "" && line.find(special) == 0 && line.find(" ") != string::npos )
-        {
-
-          int splitPos = line.find(" ");
-          string instruction = line.substr( 0, splitPos );
-          string parameters = line.substr( splitPos+1, string::npos );
-          Config::trim(parameters);
-
-          if (instruction.compare("@include") == 0 && context_path)
-            {
-
-              string include_file = path_join(string(context_path), parameters);
-
-              if (file_type(include_file.c_str()) != FILETYPE_FILE)
-                {
-                  DEBUGMSG("File not found '%s'\n", include_file.c_str());
-                }
-              else
-                {
-
-                  DEBUGMSG("Including config file '%s'\n", include_file.c_str());
-                  ifstream in_file( include_file.c_str() , ifstream::in );
-
-                  if (in_file)
-                    {
-                      string context = path_parent(include_file);
-                      load_config(in_file, context.c_str());
-                      in_file.close();
-                    }
-
-                }
-
-            }
-
-          else
-            DEBUGMSG("Unknown config instruction '%s'\n", instruction.c_str());
-
-          continue;
-        }
+        
 
       // Parse the line if it contains a delimiter
       pos delimPos = line.find( delim );
