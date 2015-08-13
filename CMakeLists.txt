@@ -24,7 +24,6 @@ LEGIT_ADD_SOURCES(
 		src/common/math/geometry.cpp
 		src/common/canvas.cpp
 	    src/api/legit.cpp
-	    src/observers.cpp
 		src/tracker.cpp
 )
 

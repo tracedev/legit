@@ -216,20 +216,7 @@ void ProxyTracker::visualize(Canvas& canvas)
   tracker->visualize(canvas);
 }
 
-void ProxyTracker::add_observer(Ptr<Observer> observer)
-{
-  tracker->add_observer(observer);
-}
 
-void ProxyTracker::remove_observer(Ptr<Observer> observer)
-{
-  tracker->remove_observer(observer);
-}
-
-vector<TimeStage> ProxyTracker::get_stages()
-{
-  return tracker->get_stages();
-}
 
 string ProxyTracker::get_name()
 {

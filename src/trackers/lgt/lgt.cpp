@@ -226,7 +226,6 @@ void LGTTracker::initialize(Image& image, Mat points)
 
   modalities.flush();
 
-  notify_observers(OBSERVER_CHANNEL_INITIALIZE, & patches);
 
   cv::Rect region = patches.region();
   Point2f mean = patches.mean_position();
@@ -288,7 +287,6 @@ void LGTTracker::update(Image& image)
 void LGTTracker::track(Image& image, bool announce, bool push)
 {
 
-  if (announce) notify_stage(STAGE_BEGIN);
 
   if (push) patches.push(); // allocate new state for patches
 
@@ -305,7 +303,6 @@ void LGTTracker::track(Image& image, bool announce, bool push)
 
   patches.move(move);
 
-  if (announce) notify_observers(OBSERVER_CHANNEL_STRUCTURE, &patches);
 
   stage_optimization(image, announce, push);
 
@@ -343,9 +340,7 @@ void LGTTracker::track(Image& image, bool announce, bool push)
 
 
 
-  if (announce) notify_stage(STAGE_END);
 
-  if (announce) notify_observers(OBSERVER_CHANNEL_STRUCTURE, &patches);
 
 }
 
@@ -357,7 +352,6 @@ void LGTTracker::stage_optimization(Image& image, bool announce, bool push)
   *********************************************************************************/
 
 
-  if (announce) notify_stage(STAGE_OPTIMIZATION_GLOBAL);
 
   cv::Point2f center = patches.mean_position();
 
@@ -402,8 +396,6 @@ void LGTTracker::stage_optimization(Image& image, bool announce, bool push)
   ****                   LOCAL OPTIMIZATION                                    ****
   *********************************************************************************/
 
-  if (announce) notify_stage(STAGE_OPTIMIZATION_LOCAL);
-
   if (patches.size() > 4)
     {
 
@@ -430,8 +422,6 @@ void LGTTracker::stage_optimization(Image& image, bool announce, bool push)
 
 void LGTTracker::stage_update_weights(Image& image, bool announce, bool push)
 {
-
-  if (announce) notify_stage(STAGE_UPDATE_WEIGHTS);
 
   Point2f *positions = new Point2f[patches.size()];
   vector<float> similarity_score;
@@ -470,7 +460,7 @@ void LGTTracker::stage_update_weights(Image& image, bool announce, bool push)
       patches.set_weight(i, reweight_persistence * patches.get_weight(i) + (1 - reweight_persistence) * similarity_score[i] * proximity_score[i]);
       reweight.weights.push_back(similarity_score[i]);
       reweight.weights.push_back(proximity_score[i]);
-      if (announce) notify_observers(OBSERVER_CHANNEL_REWEIGHT, & reweight);
+
     }
 
   // Merging or inhibition
@@ -522,7 +512,6 @@ void LGTTracker::stage_update_weights(Image& image, bool announce, bool push)
 void LGTTracker::stage_update_modalities(Image& image, bool announce, bool push)
 {
 
-  if (announce) notify_stage(STAGE_UPDATE_MODALITIES);
 
   modalities.update(image, &patches, patches.region());
 
@@ -530,8 +519,6 @@ void LGTTracker::stage_update_modalities(Image& image, bool announce, bool push)
 
 void LGTTracker::stage_add_patches(Image& image, bool announce, bool push)
 {
-
-  if (announce) notify_stage(STAGE_ADD_PATCHES);
 
   cv::Point2f center = patches.mean_position();
 
@@ -700,28 +687,7 @@ vector<cv::Point> LGTTracker::get_patch_positions()
   return positions;
 }
 
-void  LGTTracker::notify_observers(int channel, void* data, int flags)
-{
 
-  for (int i = 0; i < observers.size(); i++)
-    {
-      observers[i]->notify(this, channel, data, flags);
-    }
-
-}
-
-void LGTTracker::add_observer(Ptr<Observer> observer)
-{
-
-  if (observer)
-    observers.push_back(observer);
-
-}
-
-void LGTTracker::remove_observer(Ptr<Observer> observer)
-{
-
-}
 
 bool LGTTracker::is_tracking()
 {
@@ -730,30 +696,8 @@ bool LGTTracker::is_tracking()
 
 }
 
-void LGTTracker::notify_stage(int stage)
-{
 
-  for (int i = 0; i < observers.size(); i++)
-    {
-      int s = stage;
-      observers[i]->notify(this, OBSERVER_CHANNEL_MAIN, &s, 0);
-    }
-}
 
-vector<TimeStage> LGTTracker::get_stages()
-{
-  vector<TimeStage> stages;
-
-  stages.push_back(TimeStage("Global optimization", STAGE_OPTIMIZATION_GLOBAL));
-  stages.push_back(TimeStage("Local optimization", STAGE_OPTIMIZATION_LOCAL));
-  stages.push_back(TimeStage("Update weights", STAGE_UPDATE_WEIGHTS));
-  stages.push_back(TimeStage("Remove patches", STAGE_REMOVE_PATCHES));
-  stages.push_back(TimeStage("Update modalities", STAGE_UPDATE_MODALITIES));
-  stages.push_back(TimeStage("Add patches", STAGE_ADD_PATCHES));
-
-  return stages;
-
-}
 
 string LGTTracker::get_name()
 {

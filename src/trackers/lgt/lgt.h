@@ -32,11 +32,11 @@
 #include "common/math/geometry.h"
 #include "common/math/statistics.h"
 #include "tracker.h"
-#include "observers.h"
 #include "patches/patchset.h"
 #include "modalities/modalities.h"
 #include "optimization/optimization.h"
 #include "optimization/crossentropy.h"
+
 
 using namespace cv;
 using namespace std;
@@ -49,7 +49,11 @@ namespace legit
 namespace tracker
 {
 
-
+typedef struct
+{
+  int id;
+  vector<float> weights;
+} PatchReweight;
 class LGTTracker : public Tracker
 {
 
@@ -72,11 +76,6 @@ public:
 
   virtual void visualize(Canvas& canvas);
 
-  virtual void add_observer(Ptr<Observer> observer);
-
-  virtual void remove_observer(Ptr<Observer> observer);
-
-  virtual vector<TimeStage> get_stages();
 
   virtual string get_name();
 
@@ -93,10 +92,6 @@ protected:
   virtual void stage_update_modalities(Image& image, bool announce, bool push);
 
   virtual void stage_add_patches(Image& image, bool announce, bool push);
-
-  void notify_observers(int channel, void* data, int flags = 0);
-
-  void notify_stage(int stage);
 
   int verbosity;
 
@@ -152,7 +147,6 @@ protected:
 
   Modalities modalities;
 
-  vector<Ptr<Observer> > observers;
 
   PatchType patch_type;
 

@@ -49,7 +49,6 @@ class TrackerFactory;
 #include "common/utils/config.h"
 #include "common/image/image.h"
 #include "common/canvas.h"
-#include "observers.h"
 
 using namespace cv;
 using namespace std;
@@ -77,16 +76,6 @@ public:
   virtual bool is_tracking() = 0;
 
   virtual void visualize(Canvas& canvas) = 0;
-
-  virtual void add_observer(Ptr<Observer> observer) = 0;
-
-  virtual void remove_observer(Ptr<Observer> observer) = 0;
-
-  virtual vector<TimeStage> get_stages()
-  {
-    vector<TimeStage> stages;
-    return stages;
-  }
 
   virtual string get_name() = 0;
 
@@ -120,12 +109,6 @@ public:
   virtual bool is_tracking();
 
   virtual void visualize(Canvas& canvas);
-
-  virtual void add_observer(Ptr<Observer> observer);
-
-  virtual void remove_observer(Ptr<Observer> observer);
-
-  virtual vector<TimeStage> get_stages();
 
   virtual string get_name();
 
