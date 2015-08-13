@@ -42,69 +42,55 @@ int compare_cost_pair (const void* i, const void* j)
 LGTTracker::LGTTracker(Config& config, string inst) :
   patches(6, 30),
   modalities(config),
-  verbosity(config.read<int>("tracker.verbosity", 0)),
-  probability_size(config.read<int>("sampling.size", 20000)),
-  global_optimization(
-    config.read<int>("optimization.global.minsamples", 100),
-    config.read<int>("optimization.global.maxsamples", 300),
-    config.read<int>("optimization.global.add", 10),
-    config.read<int>("optimization.global.elite", 10),
-    config.read<int>("optimization.global.iterations", 10),
-    config.read<float>("optimization.global.terminate", 0.1)),
-  local_optimization(
-    config.read<int>("optimization.local.samples", 40),
-    config.read<int>("optimization.local.samples", 40),
-    0,
-    config.read<int>("optimization.local.elite", 5),
-    config.read<int>("optimization.local.iterations", 10),
-    config.read<float>("optimizationl.local.terminate", 0.001)),
+  verbosity(0),
+  probability_size(150),
+  global_optimization(50, 300, 10, 10, 10, 0.001),
+  local_optimization( 40, 40, 0, 5, 10, 0.001),
   motion(4, 2, 0)
 {
-
-  instance = inst;
-
   configuration = config;
+  patch_scale =  1.0;
 
-  patch_scale = configuration.read<double>("patch.scale", 1.0);
+  patches_max =  6;
+  patches_min =  36 ;
+  patches_persistence =  0.8;
 
-  patches_max = configuration.read<int>("pool.max", 6);
-  patches_min = configuration.read<int>("pool.min", 36 );
-  patches_persistence = configuration.read<double>("pool.persistence", 0.8);
+ reweight_persistence =  0.5;
+ reweight_similarity =  3;
+ reweight_distance =  3;
 
-  reweight_persistence = configuration.read<double>("reweight.persistence", 0.5);
-  reweight_similarity = configuration.read<double>("reweight.similarity", 3);
-  reweight_distance = configuration.read<double>("reweight.distance", 3);
 
-  weight_remove_threshold = configuration.read<double>("remove.weight", 0.1);
-  merge_distance = configuration.read<double>("merge.distance", 1.0);
+  weight_remove_threshold =  0.1;
+  merge_distance =  0.5;
 
-  lambda_geometry = configuration.read<double>("optimization.geometry", 0.03);
-  lambda_visual = configuration.read<double>("optimization.visual", 1);
 
-  optimization_global_M = configuration.read<double>("optimization.global.move", 20);
-  optimization_global_R = configuration.read<double>("optimization.global.rotate", 0.08);
-  optimization_global_S = configuration.read<double>("optimization.global.scale", 0.001);
 
-  optimization_local_M = configuration.read<double>("optimization.local.move", 5);
+  lambda_geometry =  0.03;
+  lambda_visual =  1;
 
-  // TODO: probably needs rethinking
-  median_size_min = configuration.read<float>("size.min", 0);
-  median_size_max = configuration.read<float>("size.max", INT_MAX);
-  median_persistence = configuration.read<double>("size.persistence", 0.8);
+  optimization_global_M =  20;
+  optimization_global_R =  0.03;
+  optimization_global_S =  0.0001;
 
-  size_constraints.min_size.width = configuration.read<int>("size.min.width", -1);
-  size_constraints.min_size.height = configuration.read<int>("size.min.height", -1);
-  size_constraints.max_size.width = configuration.read<int>("size.max.width", -1);
-  size_constraints.max_size.height = configuration.read<int>("size.max.height", -1);
 
-  sampling_threshold = configuration.read<double>("sampling.threshold", 0.2);
-  addition_distance = configuration.read<double>("sampling.mask", 3);
+  optimization_local_M =  5;
 
-  string patch_type_string = config.read<string>("patch.type", "histogram");
+   // TODO: probably needs rethinking
+  median_size_min =  0;
+  median_size_max =  INT_MAX;
+  median_persistence =  0.8;
 
-  if (patch_type_string == "histogram")
-    patch_type = HISTOGRAM;
-  else throw LegitException("Unknown patch type");
+  size_constraints.min_size.width =  -1;
+  size_constraints.min_size.height =  -1;
+  size_constraints.max_size.width =  -1;
+  size_constraints.max_size.height =  -1;
+
+  sampling_threshold =  0.2;
+  addition_distance =  3.0;
+
+  string patch_type_string = "histogram";
+
+
 
 }
 
@@ -197,7 +183,6 @@ void LGTTracker::initialize(Image& image, Mat points)
   Matrix D = distances(positions, patches.size());
   vector<double> medians;
 
-  median_threshold = 0;
   /* FIXME int k_m = MAX( ceil(D.cols * 0.1), 3 ) ;
   float md = 0.0 ;
   for (int p = 0; p < patches.size(); p++) {
@@ -214,7 +199,7 @@ void LGTTracker::initialize(Image& image, Mat points)
     }
   median_threshold = median(medians) * 1.2 ;*/
 
-  median_threshold = configuration.read<int>("size", 50);
+  median_threshold =  20000;
 
   /* FIXME
     for (int p = 0; p < patches.size(); p++) {
