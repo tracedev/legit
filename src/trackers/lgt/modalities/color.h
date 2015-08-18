@@ -27,47 +27,44 @@ using namespace cv;
 using namespace std;
 using namespace legit::common;
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
+    namespace tracker {
 
-class ModalityColor3DHistogram : public Modality
-{
+        class ModalityColor3DHistogram : public Modality {
 
-public:
-  ModalityColor3DHistogram(Config& config, string configbase);
-  ~ModalityColor3DHistogram();
+        public:
+            ModalityColor3DHistogram(Config& config, string configbase);
+            ~ModalityColor3DHistogram();
 
-  virtual void flush();
+            virtual void flush();
 
-  virtual void update(Image& image, PatchSet* patches, cv::Rect bounds);
+            virtual void update(Image& image, PatchSet* patches, cv::Rect bounds);
 
-  virtual bool usable();
+            virtual bool usable();
 
-  virtual void probability(Image& image, Mat& p);
+            virtual void probability(Image& image, Mat& p);
 
-private:
-  int colorspace;
-  int channels[3];
-  int histSize[3];
-  float ranges1[2];
-  float ranges2[2];
-  float ranges3[2];
-  const float* ranges[3];
-  bool has_data;
-  float foreground_presistence;
-  float background_presistence;
-  int background_margin, background_size;
-  float foreground_size;
-  Mat tmp_p;
-  MatND foreground;
-  MatND background;
-  MatND model;
-};
+        private:
+            int colorspace;
+            int channels[3];
+            int histSize[3];
+            float ranges1[2];
+            float ranges2[2];
+            float ranges3[2];
+            const float* ranges[3];
+            bool has_data;
+            float foreground_presistence;
+            float background_presistence;
+            int background_margin, background_size;
+            float foreground_size;
+            Mat tmp_p;
+            MatND foreground;
+            MatND background;
+            MatND model;
+        };
 
-}
+    }
 
 }
 

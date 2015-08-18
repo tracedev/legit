@@ -42,125 +42,111 @@
 #include "common/utils/utils.h"
 #include "common/image/histogram.h"
 
-namespace legit
-{
+namespace legit {
 
-namespace common
-{
+    namespace common {
 
-class IntegralImage
-{
-public:
-  IntegralImage(Mat& src);
-  IntegralImage(Mat& src, float threshold);
-  ~IntegralImage();
+        class IntegralImage {
+        public:
+            IntegralImage(Mat& src);
+            IntegralImage(Mat& src, float threshold);
+            ~IntegralImage();
 
-  void update(Mat& src);
-  void update(Mat& src, float threshold);
+            void update(Mat& src);
+            void update(Mat& src, float threshold);
 
-  inline int sum(int x1, int y1, int x2, int y2)
-  {
+            inline int sum(int x1, int y1, int x2, int y2) {
 
-    return data[y2 * width + x2] - data[y1 * width + x2] - data[y2 * width + x1] + data[y1 * width + x1];
+                return data[y2 * width + x2] - data[y1 * width + x2] - data[y2 * width + x1] + data[y1 * width + x1];
 
-  }
+            }
 
-  inline int get_width()
-  {
-    return width;
-  };
-  inline int get_height()
-  {
-    return height;
-  };
+            inline int get_width() {
+                return width;
+            };
+            inline int get_height() {
+                return height;
+            };
 
-  void print();
+            void print();
 
-protected:
-  int width;
-  int height;
+        protected:
+            int width;
+            int height;
 
-  uint32_t* data;
-};
+            uint32_t* data;
+        };
 
 
-class IntegralHistogram
-{
-public:
-  IntegralHistogram(Mat& src, int bins);
-  ~IntegralHistogram();
+        class IntegralHistogram {
+        public:
+            IntegralHistogram(Mat& src, int bins);
+            ~IntegralHistogram();
 
-  void update(Mat& src);
+            void update(Mat& src);
 
-  inline SimpleHistogram sum(int x1, int y1, int x2, int y2)
-  {
+            inline SimpleHistogram sum(int x1, int y1, int x2, int y2) {
 
-    SimpleHistogram hist = allocate_histogram(bins);
+                SimpleHistogram hist = allocate_histogram(bins);
 
-    sum(x1, y1, x2, y2, hist);
+                sum(x1, y1, x2, y2, hist);
 
-    return hist;
+                return hist;
 
-  }
+            }
 
-  inline void sum(int x1, int y1, int x2, int y2, SimpleHistogram& hist)
-  {
+            inline void sum(int x1, int y1, int x2, int y2, SimpleHistogram& hist) {
 
 
-    uint32_t* dp = &(data[y2 * width + x2]);
-    uint32_t* bp = &(data[y1 * width + x2]);
-    uint32_t* cp = &(data[y2 * width + x1]);
-    uint32_t* ap = &(data[y1 * width + x1]);
+                uint32_t* dp = &(data[y2 * width + x2]);
+                uint32_t* bp = &(data[y1 * width + x2]);
+                uint32_t* cp = &(data[y2 * width + x1]);
+                uint32_t* ap = &(data[y1 * width + x1]);
 
-    hist.sum = 0;
+                hist.sum = 0;
 
-    for (int b = 0; b < bins; b++)
-      {
-        hist.data[b] = dp[b] - cp[b] - bp[b] + ap[b];
-        hist.sum += hist.data[b];
-      }
+                for (int b = 0; b < bins; b++) {
+                    hist.data[b] = dp[b] - cp[b] - bp[b] + ap[b];
+                    hist.sum += hist.data[b];
+                }
 
-  }
+            }
 
-  inline void sum(cv::Point p, int half_size, SimpleHistogram& hist)
-  {
+            inline void sum(cv::Point p, int half_size, SimpleHistogram& hist) {
 
-    int x1 = MAX(p.x - half_size, 0);
-    int y1 = MAX(p.y - half_size, 0);
-    int x2 = MIN(p.x + half_size, width);
-    int y2 = MIN(p.y + half_size, height);
+                int x1 = MAX(p.x - half_size, 0);
+                int y1 = MAX(p.y - half_size, 0);
+                int x2 = MIN(p.x + half_size, width);
+                int y2 = MIN(p.y + half_size, height);
 
-    sum(x1, y1, x2, y2, hist);
+                sum(x1, y1, x2, y2, hist);
 
-  }
+            }
 
-  inline int get_width()
-  {
-    return width;
-  };
-  inline int get_height()
-  {
-    return height;
-  };
-  inline int get_bins()
-  {
-    return bins;
-  };
+            inline int get_width() {
+                return width;
+            };
+            inline int get_height() {
+                return height;
+            };
+            inline int get_bins() {
+                return bins;
+            };
 
-  void print(int bin);
+            void print(int bin);
 
-private:
+        private:
 
-  int width;
-  int height;
-  int bins;
-  int shift;
+            int width;
+            int height;
+            int bins;
+            int shift;
 
-  uint32_t* data;
+            uint32_t* data;
 
-};
+        };
 
-}
+    }
 
 }
 

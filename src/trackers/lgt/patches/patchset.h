@@ -33,260 +33,231 @@ using namespace cv;
 using namespace std;
 using namespace legit::common;
 
-namespace legit
-{
-
-namespace tracker
-{
-
-enum PatchType {HISTOGRAM, SSD, RGBPIXEL, HSPIXEL, PATCH_TYPE_COUNT, PATCH_TYPE_ANY};
-
-typedef struct _State
-{
-  Point2f position;
-  float weight;
-  bool active;
-} State;
-
-class Patch
-{
-public:
-  Patch(int id, int capacity, int limit, int width, int height) : states(capacity, limit), age(0), id(id), width(width), height(height), active(true) {}
-  ~Patch() {}
-
-  inline Point2f get_position(int offset)
-  {
-    return states.get(offset).position;
-  }
-
-  inline float get_weight(int offset)
-  {
-    return states.get(offset).weight;
-  }
-
-  inline Point2f get_position()
-  {
-    return states.get().position;
-  }
-
-  inline float get_weight()
-  {
-    return states.get().weight;
-  }
-
-  void set_position(Point2f p);
-  void set_weight(float weight);
-  void move_position(Point2f p);
-  inline int get_age()
-  {
-    return age;
-  };
-  inline int get_id()
-  {
-    return id;
-  };
-  inline int get_width()
-  {
-    return width;
-  };
-  inline int get_height()
-  {
-    return height;
-  };
-  inline bool is_active()
-  {
-    return active;
-  };
-  inline void set_active(bool a)
-  {
-    active = a;
-  };
-  inline bool toggle_active()
-  {
-    active = !active;
-    return active;
-  };
-
-  void push();
-  int history_size()
-  {
-    return states.size();
-  };
-
-
-  virtual void initialize(Image& image, cv::Point position) = 0;
-  virtual float response(Image& image, cv::Point position) = 0;
-  virtual void responses(Image& image, cv::Point2f* positions, int pcount, float* responses) = 0;
-  virtual PatchType get_type() = 0;
-
-protected:
-
-  Buffer<State> states;
-  int age;
-  int id;
-  int width;
-  int height;
-  bool active;
-
-};
-
-struct Filter : public unary_function<Ptr<Patch>&,bool>
-{
-  virtual bool operator() (Ptr<Patch>& patch)
-  {
-    return true;
-  };
-};
+namespace legit {
+
+    namespace tracker {
+
+        enum PatchType {HISTOGRAM, SSD, RGBPIXEL, HSPIXEL, PATCH_TYPE_COUNT, PATCH_TYPE_ANY};
+
+        typedef struct _State {
+            Point2f position;
+            float weight;
+            bool active;
+        } State;
+
+        class Patch {
+        public:
+            Patch(int id, int capacity, int limit, int width, int height) : states(capacity, limit), age(0), id(id), width(width), height(height), active(true) {}
+            ~Patch() {}
+
+            inline Point2f get_position(int offset) {
+                return states.get(offset).position;
+            }
+
+            inline float get_weight(int offset) {
+                return states.get(offset).weight;
+            }
+
+            inline Point2f get_position() {
+                return states.get().position;
+            }
+
+            inline float get_weight() {
+                return states.get().weight;
+            }
+
+            void set_position(Point2f p);
+            void set_weight(float weight);
+            void move_position(Point2f p);
+            inline int get_age() {
+                return age;
+            };
+            inline int get_id() {
+                return id;
+            };
+            inline int get_width() {
+                return width;
+            };
+            inline int get_height() {
+                return height;
+            };
+            inline bool is_active() {
+                return active;
+            };
+            inline void set_active(bool a) {
+                active = a;
+            };
+            inline bool toggle_active() {
+                active = !active;
+                return active;
+            };
+
+            void push();
+            int history_size() {
+                return states.size();
+            };
 
-class WeightGreaterFilter : public Filter
-{
-public:
-  WeightGreaterFilter(float threshold) : threshold(threshold) {}
-  ~WeightGreaterFilter() {}
-  virtual bool operator() (Ptr<Patch>& patch)
-  {
-    return (patch->get_weight(0) > threshold);
-  }
-private:
-  float threshold;
-};
 
-class WeightLowerFilter : public Filter
-{
-public:
-  WeightLowerFilter(float threshold) : threshold(threshold) {}
-  ~WeightLowerFilter() {}
-  virtual bool operator() (Ptr<Patch>& patch)
-  {
-    return (patch->get_weight(0) < threshold);
-  }
-private:
-  float threshold;
-};
+            virtual void initialize(Image& image, cv::Point position) = 0;
+            virtual float response(Image& image, cv::Point position) = 0;
+            virtual void responses(Image& image, cv::Point2f* positions, int pcount, float* responses) = 0;
+            virtual PatchType get_type() = 0;
 
-class ActiveFilter : public Filter
-{
-public:
-  ActiveFilter() {}
-  ~ActiveFilter() {}
-  virtual bool operator() (Ptr<Patch>& patch)
-  {
-    return patch->is_active();
-  }
-};
+        protected:
 
-class PatchSet
-{
-public:
+            Buffer<State> states;
+            int age;
+            int id;
+            int width;
+            int height;
+            bool active;
 
-  PatchSet(int size);
+        };
 
-  PatchSet(PatchSet& set);
+        struct Filter : public unary_function<Ptr<Patch>&, bool> {
+            virtual bool operator() (Ptr<Patch>& patch) {
+                return true;
+            };
+        };
 
-  virtual ~PatchSet();
+        class WeightGreaterFilter : public Filter {
+        public:
+            WeightGreaterFilter(float threshold) : threshold(threshold) {}
+            ~WeightGreaterFilter() {}
+            virtual bool operator() (Ptr<Patch>& patch) {
+                return (patch->get_weight(0) > threshold);
+            }
+        private:
+            float threshold;
+        };
 
-  virtual int size();
+        class WeightLowerFilter : public Filter {
+        public:
+            WeightLowerFilter(float threshold) : threshold(threshold) {}
+            ~WeightLowerFilter() {}
+            virtual bool operator() (Ptr<Patch>& patch) {
+                return (patch->get_weight(0) < threshold);
+            }
+        private:
+            float threshold;
+        };
 
-  virtual float get_weight(int index);
+        class ActiveFilter : public Filter {
+        public:
+            ActiveFilter() {}
+            ~ActiveFilter() {}
+            virtual bool operator() (Ptr<Patch>& patch) {
+                return patch->is_active();
+            }
+        };
 
-  virtual Point2f get_position(int index, int offset = 0);
+        class PatchSet {
+        public:
 
-  virtual Point2f get_relative_position(int index, Point2f origin);
+            PatchSet(int size);
 
-  virtual PatchType get_type(int index);
+            PatchSet(PatchSet& set);
 
-  virtual bool is_active(int index);
+            virtual ~PatchSet();
 
-  virtual int get_age(int index);
+            virtual int size();
 
-  virtual int get_id(int index);
+            virtual float get_weight(int index);
 
-  virtual void set_weight(int index, float weight);
+            virtual Point2f get_position(int index, int offset = 0);
 
-  virtual void set_position(int index, Point2f position);
+            virtual Point2f get_relative_position(int index, Point2f origin);
 
-  virtual void set_active(int index, bool active);
+            virtual PatchType get_type(int index);
 
-  virtual Point2f mean_position(bool weighted = true);
+            virtual bool is_active(int index);
 
-  virtual Matrix2f position_covariance(bool weighted = true);
+            virtual int get_age(int index);
 
-  virtual Rect4f region();
+            virtual int get_id(int index);
 
-  virtual void print(int i);
+            virtual void set_weight(int index, float weight);
 
-  virtual void print_all();
+            virtual void set_position(int index, Point2f position);
 
-  float response(Image& matrix, int index, Point2f position);
+            virtual void set_active(int index, bool active);
 
-  void responses(Image& matrix, int index, Point2f* positions, int pcount, float* responses);
+            virtual Point2f mean_position(bool weighted = true);
 
-  int get_patch_size()
-  {
-    return psize;
-  }
+            virtual Matrix2f position_covariance(bool weighted = true);
 
-  int get_radius()
-  {
-    return psize / 2;
-  }
+            virtual Rect4f region();
 
-  PatchSet* filter(Filter& filter);
+            virtual void print(int i);
 
-protected:
+            virtual void print_all();
 
-  vector<Ptr<Patch> > patches;
+            float response(Image& matrix, int index, Point2f position);
 
-  int hsize;
-  int psize;
+            void responses(Image& matrix, int index, Point2f* positions, int pcount, float* responses);
 
-};
+            int get_patch_size() {
+                return psize;
+            }
 
-class Patches : public PatchSet
-{
+            int get_radius() {
+                return psize / 2;
+            }
 
-public:
+            PatchSet* filter(Filter& filter);
 
-  Patches(int size, int bufferlimit = 5);
+        protected:
 
-  virtual ~Patches();
+            vector<Ptr<Patch> > patches;
 
-  void push();
+            int hsize;
+            int psize;
 
-  void move(Point2f vector);
+        };
 
-  int add(Image& image, PatchType type, Point2f position, float weight);
+        class Patches : public PatchSet {
 
-  void remove(int index);
+        public:
 
-  void remove(vector<int>& indices);
+            Patches(int size, int bufferlimit = 5);
 
-  int remove(Filter& filter);
+            virtual ~Patches();
 
-  void flush();
+            void push();
 
-  int merge(Image& image, vector<int>& indices, PatchType type = PATCH_TYPE_ANY);
+            void move(Point2f vector);
 
-  int inhibit(Image& image, vector<int>& indices);
+            int add(Image& image, PatchType type, Point2f position, float weight);
 
-  int get_motion_history(int index, Point2f* buffer, int maxlen);
+            void remove(int index);
 
-  void normalize_weights();
+            void remove(vector<int>& indices);
 
-  void set_patch_size(int size)
-  {
-    flush();
-    psize = size;
-  }
+            int remove(Filter& filter);
 
-private:
+            void flush();
 
-  int count;
-  int bufferlimit;
+            int merge(Image& image, vector<int>& indices, PatchType type = PATCH_TYPE_ANY);
 
-};
+            int inhibit(Image& image, vector<int>& indices);
 
-}
+            int get_motion_history(int index, Point2f* buffer, int maxlen);
+
+            void normalize_weights();
+
+            void set_patch_size(int size) {
+                flush();
+                psize = size;
+            }
+
+        private:
+
+            int count;
+            int bufferlimit;
+
+        };
+
+    }
 
 }
 

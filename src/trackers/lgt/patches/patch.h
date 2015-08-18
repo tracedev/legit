@@ -28,93 +28,83 @@ using namespace cv;
 using namespace std;
 using namespace legit::common;
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
+    namespace tracker {
 
-class HistogramPatch : public Patch
-{
-public:
-  HistogramPatch(int id, int capacity, int limit, int width, int height) : Patch(id, capacity, limit, width, height) {}
-  ~HistogramPatch();
+        class HistogramPatch : public Patch {
+        public:
+            HistogramPatch(int id, int capacity, int limit, int width, int height) : Patch(id, capacity, limit, width, height) {}
+            ~HistogramPatch();
 
-  virtual void initialize(Image& image, cv::Point position);
-  virtual inline float response(Image& image, cv::Point position);
-  virtual inline void responses(Image& image, cv::Point2f* positions, int pcount, float* responses);
-  virtual PatchType get_type()
-  {
-    return HISTOGRAM;
-  }
+            virtual void initialize(Image& image, cv::Point position);
+            virtual inline float response(Image& image, cv::Point position);
+            virtual inline void responses(Image& image, cv::Point2f* positions, int pcount, float* responses);
+            virtual PatchType get_type() {
+                return HISTOGRAM;
+            }
 
-private:
+        private:
 
-  SimpleHistogram histogram;
+            SimpleHistogram histogram;
 
-  SimpleHistogram temporary;
+            SimpleHistogram temporary;
 
-  Point3f color; // hack
-};
+            Point3f color; // hack
+        };
 
 
-class RGBPatch : public Patch
-{
-public:
-  RGBPatch(int id, int capacity, int limit) : Patch(id, capacity, limit, 1, 1) {}
-  ~RGBPatch();
+        class RGBPatch : public Patch {
+        public:
+            RGBPatch(int id, int capacity, int limit) : Patch(id, capacity, limit, 1, 1) {}
+            ~RGBPatch();
 
-  virtual void initialize(Image& image, cv::Point position);
-  virtual inline float response(Image& image, cv::Point position);
-  virtual inline void responses(Image& image, cv::Point2f* positions, int pcount, float* responses);
-  virtual PatchType get_type()
-  {
-    return RGBPIXEL;
-  }
-private:
+            virtual void initialize(Image& image, cv::Point position);
+            virtual inline float response(Image& image, cv::Point position);
+            virtual inline void responses(Image& image, cv::Point2f* positions, int pcount, float* responses);
+            virtual PatchType get_type() {
+                return RGBPIXEL;
+            }
+        private:
 
-  Point3f color;
-};
+            Point3f color;
+        };
 
-class HSPatch : public Patch
-{
-public:
-  HSPatch(int id, int capacity, int limit) : Patch(id, capacity, limit, 1, 1) {}
-  ~HSPatch();
+        class HSPatch : public Patch {
+        public:
+            HSPatch(int id, int capacity, int limit) : Patch(id, capacity, limit, 1, 1) {}
+            ~HSPatch();
 
-  virtual void initialize(Image& image, cv::Point position);
-  virtual inline float response(Image& image, cv::Point position);
-  virtual inline void responses(Image& image, cv::Point2f* positions, int pcount, float* responses);
-  virtual PatchType get_type()
-  {
-    return HSPIXEL;
-  }
+            virtual void initialize(Image& image, cv::Point position);
+            virtual inline float response(Image& image, cv::Point position);
+            virtual inline void responses(Image& image, cv::Point2f* positions, int pcount, float* responses);
+            virtual PatchType get_type() {
+                return HSPIXEL;
+            }
 
-private:
+        private:
 
-  Point3f color;
-};
+            Point3f color;
+        };
 
-class SSDPatch : public Patch
-{
-public:
-  SSDPatch(int id, int capacity, int limit, int width, int height) : Patch(id, capacity, limit, width, height) {}
-  ~SSDPatch() {}
+        class SSDPatch : public Patch {
+        public:
+            SSDPatch(int id, int capacity, int limit, int width, int height) : Patch(id, capacity, limit, width, height) {}
+            ~SSDPatch() {}
 
-  virtual void initialize(Image& image, cv::Point position);
-  virtual inline float response(Image& image, cv::Point position);
-  virtual inline void responses(Image& image, Point2f* positions, int pcount, float* responses);
+            virtual void initialize(Image& image, cv::Point position);
+            virtual inline float response(Image& image, cv::Point position);
+            virtual inline void responses(Image& image, Point2f* positions, int pcount, float* responses);
 
-  virtual PatchType get_type()
-  {
-    return SSD;
-  }
+            virtual PatchType get_type() {
+                return SSD;
+            }
 
-private:
-  Mat tmpl;
-};
+        private:
+            Mat tmpl;
+        };
 
-}
+    }
 
 }
 

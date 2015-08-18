@@ -28,147 +28,131 @@
 #include "motion.h"
 #include "shape.h"
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
+    namespace tracker {
 
-Modalities::Modalities(Config& config)
-{
+        Modalities::Modalities(Config& config) {
 
 
-        modalities.push_back(Ptr<Modality>(new ModalityColor3DHistogram(config, "")));
+            modalities.push_back(Ptr<Modality>(new ModalityColor3DHistogram(config, "")));
 
 
-        modalities.push_back(Ptr<Modality>(new ModalityConvex(config, "cuename")));
+            modalities.push_back(Ptr<Modality>(new ModalityConvex(config, "cuename")));
 
 
-        modalities.push_back(Ptr<Modality>(new ModalityMotionLK(config, "cuename")));
+            modalities.push_back(Ptr<Modality>(new ModalityMotionLK(config, "cuename")));
 
 
-      //  modalities.push_back(Ptr<Modality>(new ModalityBounding(config, cuename)));
-
-    
+            //  modalities.push_back(Ptr<Modality>(new ModalityBounding(config, cuename)));
 
 
 
 
-}
-
-Modalities::~Modalities()
-{
-
-}
-
-void Modalities::flush()
-{
-
-  for (int i = 0; i < modalities.size(); i++)
-    {
-      modalities[i]->flush();
-    }
-
-}
-
-void Modalities::update(Image& image, PatchSet* patches, Rect bounds)
-{
-
-  for (int i = 0; i < modalities.size(); i++)
-    {
-      modalities[i]->update(image, patches, bounds);
-    }
-
-}
-
-void Modalities::probability(Image& image, Mat& p)
-{
-
-  Rect region = image.get_roi();
-  cv::Point modalityOffset(0, 0);
-
-  if (region.width == 0 || region.height == 0)
-    {
-      p.release();
-      return;
-    }
 
 
-  Mat pmap;
-  pmap.create(region.height, region.width, CV_32FC1);
-
-  p.create(region.height, region.width, CV_32FC1);
-  p.setTo(1 / (float) (region.height * region.width));
-
-  bool usable = false;
-
-
-
-  for (int i = 0; i < modalities.size(); i++)
-    {
-
-      if (!modalities[i]->usable())
-        {
-
-          continue;
         }
 
-      modalities[i]->probability(image, pmap);
+        Modalities::~Modalities() {
 
-      if (pmap.empty()) continue;
+        }
+
+        void Modalities::flush() {
+
+            for (int i = 0; i < modalities.size(); i++) {
+                modalities[i]->flush();
+            }
+
+        }
+
+        void Modalities::update(Image& image, PatchSet* patches, Rect bounds) {
+
+            for (int i = 0; i < modalities.size(); i++) {
+                modalities[i]->update(image, patches, bounds);
+            }
+
+        }
+
+        void Modalities::probability(Image& image, Mat& p) {
+
+            Rect region = image.get_roi();
+            cv::Point modalityOffset(0, 0);
+
+            if (region.width == 0 || region.height == 0) {
+                p.release();
+                return;
+            }
+
+
+            Mat pmap;
+            pmap.create(region.height, region.width, CV_32FC1);
+
+            p.create(region.height, region.width, CV_32FC1);
+            p.setTo(1 / (float) (region.height * region.width));
+
+            bool usable = false;
 
 
 
-      p = p.mul(pmap);
-      usable = true;
+            for (int i = 0; i < modalities.size(); i++) {
+
+                if (!modalities[i]->usable()) {
+
+                    continue;
+                }
+
+                modalities[i]->probability(image, pmap);
+
+                if (pmap.empty()) { continue; }
+
+
+
+                p = p.mul(pmap);
+                usable = true;
+            }
+
+            if (!usable)
+            { p.setTo(0); }
+
+
+        }
+
+        void Modalities::probability(Image& image, Mat& p, int i) {
+
+            Rect region = image.get_roi();
+
+            if (region.width == 0 || region.height == 0) {
+                p.release();
+                return;
+            }
+
+            p.create(region.height, region.width, CV_32FC1);
+
+            if (!modalities[i]->usable()) {
+                p.setTo(1 / (float) (region.height * region.width));
+                return;
+            }
+
+            modalities[i]->probability(image, p);
+
+        }
+
+        int Modalities::size() {
+            return modalities.size();
+
+        }
+
+
+        Modality::Modality(Config& config, string configbase) {
+
+            double weight = 0.5;
+            int age = 0;
+
+            reliablePatchesFilter = Ptr<ReliablePatchesFilter>(new ReliablePatchesFilter(weight, age));
+
+
+        }
+
     }
-
-  if (!usable)
-    p.setTo(0);
-
-
-}
-
-void Modalities::probability(Image& image, Mat& p, int i)
-{
-
-  Rect region = image.get_roi();
-
-  if (region.width == 0 || region.height == 0)
-    {
-      p.release();
-      return;
-    }
-
-  p.create(region.height, region.width, CV_32FC1);
-  if (!modalities[i]->usable())
-    {
-      p.setTo(1 / (float) (region.height * region.width));
-      return;
-    }
-
-  modalities[i]->probability(image, p);
-
-}
-
-int Modalities::size()
-{
-  return modalities.size();
-
-}
-
-
-Modality::Modality(Config& config, string configbase)
-{
-
-  double weight = 0.5;
-  int age = 0;
-
-  reliablePatchesFilter = Ptr<ReliablePatchesFilter>(new ReliablePatchesFilter(weight, age));
-
-
-}
-
-}
 
 }

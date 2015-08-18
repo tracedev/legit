@@ -43,122 +43,118 @@ using namespace std;
 using namespace legit::common;
 using namespace legit::tracker;
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
+    namespace tracker {
 
-typedef struct
-{
-  int id;
-  vector<float> weights;
-} PatchReweight;
-class LGTTracker : public Tracker
-{
+        typedef struct {
+            int id;
+            vector<float> weights;
+        } PatchReweight;
+        class LGTTracker : public Tracker {
 
-public:
+        public:
 
-  LGTTracker(Config& config, string instance = "default");
-  ~LGTTracker();
+            LGTTracker(Config& config, string instance = "default");
+            ~LGTTracker();
 
-  virtual void initialize(Image& image, cv::Rect region);
+            virtual void initialize(Image& image, cv::Rect region);
 
-  virtual void initialize(Image& image, Mat positions);
+            virtual void initialize(Image& image, Mat positions);
 
-  virtual void update(Image& image);
+            virtual void update(Image& image);
 
-  virtual cv::Rect region();
+            virtual cv::Rect region();
 
-  virtual Point2f position();
+            virtual Point2f position();
 
-  virtual bool is_tracking();
+            virtual bool is_tracking();
 
-  virtual void visualize(Canvas& canvas);
+            virtual void visualize(Canvas& canvas);
 
 
-  virtual string get_name();
+            virtual string get_name();
 
-  vector<cv::Point> get_patch_positions();
+            vector<cv::Point> get_patch_positions();
 
-  virtual void track(Image& image, bool announce, bool push);
+            virtual void track(Image& image, bool announce, bool push);
 
-protected:
+        protected:
 
-  virtual void stage_optimization(Image& image, bool announce, bool push);
+            virtual void stage_optimization(Image& image, bool announce, bool push);
 
-  virtual void stage_update_weights(Image& image, bool announce, bool push);
+            virtual void stage_update_weights(Image& image, bool announce, bool push);
 
-  virtual void stage_update_modalities(Image& image, bool announce, bool push);
+            virtual void stage_update_modalities(Image& image, bool announce, bool push);
 
-  virtual void stage_add_patches(Image& image, bool announce, bool push);
+            virtual void stage_add_patches(Image& image, bool announce, bool push);
 
-  int verbosity;
+            int verbosity;
 
-  Config configuration;
+            Config configuration;
 
-  string instance;
+            string instance;
 
-  SizeConstraints size_constraints;
+            SizeConstraints size_constraints;
 
-  float median_size_min, median_size_max;
+            float median_size_min, median_size_max;
 
-  float patch_scale;
+            float patch_scale;
 
-  int patches_max, patches_min;
+            int patches_max, patches_min;
 
-  double patches_persistence, patches_capacity;
+            double patches_persistence, patches_capacity;
 
-  double median_persistence, median_threshold;
+            double median_persistence, median_threshold;
 
-  int probability_size;
+            int probability_size;
 
-  float merge_distance;
+            float merge_distance;
 
-  float reweight_similarity;
+            float reweight_similarity;
 
-  float reweight_distance;
+            float reweight_distance;
 
-  float reweight_persistence;
+            float reweight_persistence;
 
-  float weight_remove_threshold;
+            float weight_remove_threshold;
 
-  float lambda_geometry, lambda_visual;
+            float lambda_geometry, lambda_visual;
 
-  CrossEntropyParameters global_optimization;
+            CrossEntropyParameters global_optimization;
 
-  CrossEntropyParameters local_optimization;
+            CrossEntropyParameters local_optimization;
 
-  float optimization_global_M;
+            float optimization_global_M;
 
-  float optimization_global_R;
+            float optimization_global_R;
 
-  float optimization_global_S;
+            float optimization_global_S;
 
-  float optimization_local_M;
+            float optimization_local_M;
 
-  float sampling_threshold;
+            float sampling_threshold;
 
-  float addition_distance;
+            float addition_distance;
 
-  KalmanFilter motion;
+            KalmanFilter motion;
 
-  Patches patches;
+            Patches patches;
 
-  Modalities modalities;
+            Modalities modalities;
 
 
-  PatchType patch_type;
+            PatchType patch_type;
 
-  Canvas* motionCanvas;
+            Canvas* motionCanvas;
 
-  Canvas* weightsCanvas;
+            Canvas* weightsCanvas;
 
-};
+        };
 
-void supress_noise(Mat& mat, float threshold, int window, float percent, IntegralImage* integral = NULL);
+        void supress_noise(Mat& mat, float threshold, int window, float percent, IntegralImage* integral = NULL);
 
-}
+    }
 
 }
 

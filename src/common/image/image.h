@@ -40,95 +40,89 @@
 #define IMAGE_FORMAT_YCRCB 3
 #define IMAGE_FORMATS 4
 
-namespace legit
-{
+namespace legit {
 
-namespace common
-{
+    namespace common {
 
-class Image
-{
-public:
-  Image();
+        class Image {
+        public:
+            Image();
 
-  Image(int width, int height);
+            Image(int width, int height);
 
-  Image(const std::string& path);
+            Image(const std::string& path);
 
-  Image(Mat& image);
+            Image(Mat& image);
 
-  Image(Image& image, cv::Rect region);
+            Image(Image& image, cv::Rect region);
 
-  ~Image();
+            ~Image();
 
-  void update(Mat& image);
+            void update(Mat& image);
 
-  void update(Mat& data, int format, bool overwrite = true);
+            void update(Mat& data, int format, bool overwrite = true);
 
-  void reset();
+            void reset();
 
-  void copy_region(Image& image, cv::Rect region);
+            void copy_region(Image& image, cv::Rect region);
 
-  Mat get(int format);
+            Mat get(int format);
 
-  Mat get_rgb();
+            Mat get_rgb();
 
-  Mat get_gray();
+            Mat get_gray();
 
-  Mat get_hsv();
+            Mat get_hsv();
 
-  Mat get_mask();
+            Mat get_mask();
 
-  Mat get_float_mask();
+            Mat get_float_mask();
 
-  inline bool empty()
-  {
-    return _width == 0 && _height == 0;
-  }
+            inline bool empty() {
+                return _width == 0 && _height == 0;
+            }
 
-  inline int width()
-  {
-    return _width;
-  };
+            inline int width() {
+                return _width;
+            };
 
-  inline int height()
-  {
-    return _height;
-  };
+            inline int height() {
+                return _height;
+            };
 
-  Point2i get_offset();
+            Point2i get_offset();
 
-  cv::Rect get_roi();
+            cv::Rect get_roi();
 
-private:
+        private:
 
-  void update_size();
+            void update_size();
 
-  int _width;
-  int _height;
+            int _width;
+            int _height;
 
-  bool has_format[IMAGE_FORMATS];
-  Mat formats[IMAGE_FORMATS];
+            bool has_format[IMAGE_FORMATS];
+            Mat formats[IMAGE_FORMATS];
 
-  bool has_mask;
-  Mat mask;
+            bool has_mask;
+            Mat mask;
 
-  bool has_float_mask;
-  Mat float_mask;
+            bool has_float_mask;
+            Mat float_mask;
 
-  bool has_inthist16;
-  IntegralHistogram* inthist16;
+            bool has_inthist16;
+            IntegralHistogram* inthist16;
 
-  bool has_inthist32;
-  IntegralHistogram* inthist32;
+            bool has_inthist32;
+            IntegralHistogram* inthist32;
 
-  bool has_integral_image;
-  IntegralImage* integral_image;
+            bool has_integral_image;
+            IntegralImage* integral_image;
 
-  Point2i offset;
-};
+            Point2i offset;
+        };
 
-}
+    }
 
 }
 

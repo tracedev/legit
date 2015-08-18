@@ -38,20 +38,17 @@
 using namespace std;
 using namespace cv;
 
-namespace legit
-{
+namespace legit {
 
-namespace common
-{
+    namespace common {
 
-typedef struct
-{
+        typedef struct {
 
-  int32_t *data;
-  int size;
-  int sum;
+            int32_t* data;
+            int size;
+            int sum;
 
-} SimpleHistogram;
+        } SimpleHistogram;
 
 #define HIST_POW_8 3
 #define HIST_SIZE_8 8
@@ -62,155 +59,145 @@ typedef struct
 #define HIST_POW_32 5
 #define HIST_SIZE_32 32
 
-inline void update_histogram16(Mat& image, cv::Point position, int half_size, SimpleHistogram& histogram)
-{
+        inline void update_histogram16(Mat& image, cv::Point position, int half_size, SimpleHistogram& histogram) {
 
-  /*    DEBUGGING {
-          assert(histogram.size == HIST_SIZE_16);
-      }*/
+            /*    DEBUGGING {
+                    assert(histogram.size == HIST_SIZE_16);
+                }*/
 
-  int x1 = MAX(position.x - half_size, 0);
-  int y1 = MAX(position.y - half_size, 0);
-  int x2 = MIN(position.x + half_size, image.cols);
-  int y2 = MIN(position.y + half_size, image.rows);
+            int x1 = MAX(position.x - half_size, 0);
+            int y1 = MAX(position.y - half_size, 0);
+            int x2 = MIN(position.x + half_size, image.cols);
+            int y2 = MIN(position.y + half_size, image.rows);
 
-  memset(histogram.data, 0, sizeof(int32_t) * HIST_SIZE_16);
-  for (int j = y1 ; j < y2; j++)
-    {
-      uchar* data = image.ptr<uchar>(j);
-      for (int i = x1 ; i < x2; i++)
-        {
-          int bin = data[i] >> (8 - HIST_POW_16);
-          histogram.data[bin]++;
+            memset(histogram.data, 0, sizeof(int32_t) * HIST_SIZE_16);
+
+            for (int j = y1 ; j < y2; j++) {
+                uchar* data = image.ptr<uchar>(j);
+
+                for (int i = x1 ; i < x2; i++) {
+                    int bin = data[i] >> (8 - HIST_POW_16);
+                    histogram.data[bin]++;
+                }
+            }
+
+            int N = (x2 - x1) * (y2 - y1);
+            histogram.sum = MAX(N, 0);
         }
-    }
 
-  int N = (x2 - x1) * (y2 - y1);
-  histogram.sum = MAX(N, 0);
-}
+        inline SimpleHistogram calculate_histogram16(Mat& image, cv::Point position, int size) {
 
-inline SimpleHistogram calculate_histogram16(Mat& image, cv::Point position, int size)
-{
+            int size2 = size >> 1;
+            SimpleHistogram histogram;
+            int x1 = MAX(position.x - size2, 0);
+            int y1 = MAX(position.y - size2, 0);
+            int x2 = MIN(position.x + size2, image.cols);
+            int y2 = MIN(position.y + size2, image.rows);
 
-  int size2 = size >> 1;
-  SimpleHistogram histogram;
-  int x1 = MAX(position.x - size2, 0);
-  int y1 = MAX(position.y - size2, 0);
-  int x2 = MIN(position.x + size2, image.cols);
-  int y2 = MIN(position.y + size2, image.rows);
+            histogram.data = new int32_t[HIST_SIZE_16];
+            memset(histogram.data, 0, sizeof(int32_t) * HIST_SIZE_16);
 
-  histogram.data = new int32_t[HIST_SIZE_16];
-  memset(histogram.data, 0, sizeof(int32_t) * HIST_SIZE_16);
-  for (int j = y1 ; j < y2; j++)
-    {
-      uchar* data = image.ptr<uchar>(j);
-      for (int i = x1 ; i < x2; i++)
-        {
-          int bin = data[i] >> (8 - HIST_POW_16);
-          histogram.data[bin]++;
+            for (int j = y1 ; j < y2; j++) {
+                uchar* data = image.ptr<uchar>(j);
+
+                for (int i = x1 ; i < x2; i++) {
+                    int bin = data[i] >> (8 - HIST_POW_16);
+                    histogram.data[bin]++;
+                }
+            }
+
+            int N = (x2 - x1) * (y2 - y1);
+            histogram.sum = MAX(N, 0);
+            histogram.size = HIST_SIZE_16;
+            return histogram;
         }
-    }
-
-  int N = (x2 - x1) * (y2 - y1);
-  histogram.sum = MAX(N, 0);
-  histogram.size = HIST_SIZE_16;
-  return histogram;
-}
 
 
-inline SimpleHistogram calculate_histogram32(Mat& image, cv::Point position, int size)
-{
+        inline SimpleHistogram calculate_histogram32(Mat& image, cv::Point position, int size) {
 
-  int size2 = size >> 1;
-  SimpleHistogram histogram;
-  int x1 = MAX(position.x - size2, 0);
-  int y1 = MAX(position.y - size2, 0);
-  int x2 = MIN(position.x + size2, image.cols);
-  int y2 = MIN(position.y + size2, image.rows);
+            int size2 = size >> 1;
+            SimpleHistogram histogram;
+            int x1 = MAX(position.x - size2, 0);
+            int y1 = MAX(position.y - size2, 0);
+            int x2 = MIN(position.x + size2, image.cols);
+            int y2 = MIN(position.y + size2, image.rows);
 
-  histogram.data = new int32_t[HIST_SIZE_32];
-  memset(histogram.data, 0, sizeof(int32_t) * HIST_SIZE_32);
-  for (int j = y1 ; j < y2; j++)
-    {
-      uchar* data = image.ptr<uchar>(j);
-      for (int i = x1 ; i < x2; i++)
-        {
-          int bin = data[i] >> (8 - HIST_POW_32);
-          histogram.data[bin]++;
+            histogram.data = new int32_t[HIST_SIZE_32];
+            memset(histogram.data, 0, sizeof(int32_t) * HIST_SIZE_32);
+
+            for (int j = y1 ; j < y2; j++) {
+                uchar* data = image.ptr<uchar>(j);
+
+                for (int i = x1 ; i < x2; i++) {
+                    int bin = data[i] >> (8 - HIST_POW_32);
+                    histogram.data[bin]++;
+                }
+            }
+
+            int N = (x2 - x1) * (y2 - y1);
+            histogram.sum = MAX(N, 0);
+            histogram.size = HIST_SIZE_32;
+            return histogram;
         }
-    }
 
-  int N = (x2 - x1) * (y2 - y1);
-  histogram.sum = MAX(N, 0);
-  histogram.size = HIST_SIZE_32;
-  return histogram;
-}
-
-inline float compare_histogram(SimpleHistogram& h1, SimpleHistogram& h2)
-{
+        inline float compare_histogram(SimpleHistogram& h1, SimpleHistogram& h2) {
 // Bhattacharryya coefficient: 0 complete difference, 1 complete similarity
-  /*  if (!h1.sum || !h2.sum)
-        return 1000;   // vrniti bi moral 0 ?
-  	*/
-  if (!h1.sum || !h2.sum)
-    {
-      if (h1.sum==0 && h2.sum==0)
-        return 1.0 ;
-      else
-        return 0.0 ;
+            /*  if (!h1.sum || !h2.sum)
+                  return 1000;   // vrniti bi moral 0 ?
+              */
+            if (!h1.sum || !h2.sum) {
+                if (h1.sum == 0 && h2.sum == 0)
+                { return 1.0 ; }
+                else
+                { return 0.0 ; }
+            }
+
+            int32_t* hist1 = (int32_t*) h1.data;
+            int32_t* hist2 = (int32_t*) h2.data;
+
+            float bc = 0;
+
+            for (int i = 0; i < h1.size; i++) {
+                bc += SQRT((float)(hist1[i] * hist2[i]));
+            }
+
+            return bc * SQRT_INV((float)(h1.sum * h2.sum));
+        }
+
+        inline void release_histogram(SimpleHistogram& h) {
+
+            delete [] h.data;
+
+        }
+
+        inline SimpleHistogram allocate_histogram(int bins, bool reset = false) {
+
+            SimpleHistogram histogram;
+
+            histogram.data = new int32_t[bins];
+
+            if (reset) {
+                histogram.sum = 0;
+                memset(histogram.data, 0, sizeof(int32_t) * bins);
+            }
+
+            histogram.size = bins;
+
+            return histogram;
+        }
+
+        inline void reset_histogram(SimpleHistogram& h) {
+
+            memset(h.data, 0, sizeof(int32_t) * h.size);
+            h.sum = 0;
+
+        }
+
+        void print_histogram(SimpleHistogram h);
+
+
+
     }
-
-  int32_t* hist1 = (int32_t*) h1.data;
-  int32_t* hist2 = (int32_t*) h2.data;
-
-  float bc = 0;
-
-  for (int i = 0; i < h1.size; i++)
-    {
-      bc += SQRT((float)(hist1[i] * hist2[i]));
-    }
-
-  return bc * SQRT_INV((float)(h1.sum * h2.sum));
-}
-
-inline void release_histogram(SimpleHistogram& h)
-{
-
-  delete [] h.data;
-
-}
-
-inline SimpleHistogram allocate_histogram(int bins, bool reset = false)
-{
-
-  SimpleHistogram histogram;
-
-  histogram.data = new int32_t[bins];
-
-  if (reset)
-    {
-      histogram.sum = 0;
-      memset(histogram.data, 0, sizeof(int32_t) * bins);
-    }
-
-  histogram.size = bins;
-
-  return histogram;
-}
-
-inline void reset_histogram(SimpleHistogram& h)
-{
-
-  memset(h.data, 0, sizeof(int32_t) * h.size);
-  h.sum = 0;
-
-}
-
-void print_histogram(SimpleHistogram h);
-
-
-
-}
 
 }
 

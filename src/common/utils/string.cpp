@@ -33,54 +33,48 @@
 
 using namespace std;
 
-bool matches_suffix(const char* str, const char* suffix)
-{
+bool matches_suffix(const char* str, const char* suffix) {
 
-  int len = strlen(str);
-  int slen = strlen(suffix);
+    int len = strlen(str);
+    int slen = strlen(suffix);
 
-  if (slen > len)
-    return false;
+    if (slen > len)
+    { return false; }
 
-  for (int i = 1; i <= slen; i++)
-    {
-      if (str[len-i] != suffix[slen-i])
-        return false;
+    for (int i = 1; i <= slen; i++) {
+        if (str[len - i] != suffix[slen - i])
+        { return false; }
 
     }
 
-  return true;
+    return true;
 }
 
-bool matches_prefix(const char* str, const char* prefix)
-{
+bool matches_prefix(const char* str, const char* prefix) {
 
-  int len = strlen(str);
-  int slen = strlen(prefix);
+    int len = strlen(str);
+    int slen = strlen(prefix);
 
-  if (slen > len)
-    return false;
+    if (slen > len)
+    { return false; }
 
-  for (int i = 0; i < slen; i++)
-    {
-      if (str[i] != prefix[i])
-        return false;
+    for (int i = 0; i < slen; i++) {
+        if (str[i] != prefix[i])
+        { return false; }
 
     }
 
-  return true;
+    return true;
 }
 
-bool matches_suffix(const string str, const string suffix)
-{
+bool matches_suffix(const string str, const string suffix) {
 
-  return matches_suffix(str.c_str(), suffix.c_str());
+    return matches_suffix(str.c_str(), suffix.c_str());
 
 }
 
-bool matches_prefix(const string str, const string prefix)
-{
+bool matches_prefix(const string str, const string prefix) {
 
-  return matches_prefix(str.c_str(), prefix.c_str());
+    return matches_prefix(str.c_str(), prefix.c_str());
 
 }

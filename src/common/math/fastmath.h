@@ -31,57 +31,57 @@
 #define _FAST_MATH_H
 
 /*
- *	Square root by abacus algorithm, Martin Guy @ UKC, June 1985.
- *	From a book on programming abaci by Mr C. Woo.
- *	Argument is a positive integer, as is result.
+ *  Square root by abacus algorithm, Martin Guy @ UKC, June 1985.
+ *  From a book on programming abaci by Mr C. Woo.
+ *  Argument is a positive integer, as is result.
  *
- *	I have formally proved that on exit:
- *		   2		   2		   2
- *		res  <= x < (res+1)	and	res  + op == x
+ *  I have formally proved that on exit:
+ *         2           2           2
+ *      res  <= x < (res+1) and res  + op == x
  *
- *	This is also nine times faster than the library routine (-lm).
+ *  This is also nine times faster than the library routine (-lm).
  */
 
-inline int intsqrt(int x)
-{
-  /*
-   *	Logically, these are unsigned. We need the sign bit to test
-   *	whether (op - res - one) underflowed.
-   */
+inline int intsqrt(int x) {
+    /*
+     *    Logically, these are unsigned. We need the sign bit to test
+     *    whether (op - res - one) underflowed.
+     */
 
-  register int op, res, one;
+    register int op, res, one;
 
-  op = x;
-  res = 0;
+    op = x;
+    res = 0;
 
-  /* "one" starts at the highest power of four <= than the argument. */
+    /* "one" starts at the highest power of four <= than the argument. */
 
-  one = 1 << 30;	/* second-to-top bit set */
-  while (one > op) one >>= 2;
+    one = 1 << 30;    /* second-to-top bit set */
 
-  while (one != 0)
-    {
-      if (op >= res + one)
-        {
-          op = op - (res + one);
-          res = res +  2 * one;
+    while (one > op) { one >>= 2; }
+
+    while (one != 0) {
+        if (op >= res + one) {
+            op = op - (res + one);
+            res = res +  2 * one;
         }
-      res /= 2;
-      one /= 4;
+
+        res /= 2;
+        one /= 4;
     }
-  return(res);
+
+    return (res);
 }
 
 inline float am_fsqrt(float x)  // 0,00079 on sqrt(220.54) , t = 220, tref = 580
 //http://www.codemaestro.com/reviews/review00000105.html
 {
-  float x_in = x ;
-  float xhalf = 0.5f*x;
-  int i = *(int*)&x; // get bits for floating value
-  i = 0x5f375a86- (i>>1); // gives initial guess y0
-  x = *(float*)&i; // convert bits back to float
-  x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
-  return x*x_in;
+    float x_in = x ;
+    float xhalf = 0.5f * x;
+    int i = *(int*)&x; // get bits for floating value
+    i = 0x5f375a86 - (i >> 1); // gives initial guess y0
+    x = *(float*)&i; // convert bits back to float
+    x = x * (1.5f - xhalf * x * x); // Newton step, repeating increases accuracy
+    return x * x_in;
 }
 
 
@@ -89,14 +89,14 @@ inline float am_fsqrt(float x)  // 0,00079 on sqrt(220.54) , t = 220, tref = 580
 inline float am_fsqrt2(float x)  // 6E-7 on sqrt(220.54) , t = 320, tref = 580
 //http://www.codemaestro.com/reviews/review00000105.html
 {
-  float x_in = x ;
-  float xhalf = 0.5f*x;
-  int i = *(int*)&x; // get bits for floating value
-  i = 0x5f375a86- (i>>1); // gives initial guess y0
-  x = *(float*)&i; // convert bits back to float
-  x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
-  x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
-  return x*x_in;
+    float x_in = x ;
+    float xhalf = 0.5f * x;
+    int i = *(int*)&x; // get bits for floating value
+    i = 0x5f375a86 - (i >> 1); // gives initial guess y0
+    x = *(float*)&i; // convert bits back to float
+    x = x * (1.5f - xhalf * x * x); // Newton step, repeating increases accuracy
+    x = x * (1.5f - xhalf * x * x); // Newton step, repeating increases accuracy
+    return x * x_in;
 }
 
 //---------------------------------------------------------------------------
@@ -104,41 +104,41 @@ inline float am_fsqrt2(float x)  // 6E-7 on sqrt(220.54) , t = 320, tref = 580
 inline float am_finvsqrt(float x)  // 0,00079 on sqrt(220.54)
 //http://www.codemaestro.com/reviews/review00000105.html
 {
-  float xhalf = 0.5f*x;
-  int i = *(int*)&x; // get bits for floating value
-  i = 0x5f375a86- (i>>1); // gives initial guess y0
-  x = *(float*)&i; // convert bits back to float
-  x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
-  x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
-  return x;
+    float xhalf = 0.5f * x;
+    int i = *(int*)&x; // get bits for floating value
+    i = 0x5f375a86 - (i >> 1); // gives initial guess y0
+    x = *(float*)&i; // convert bits back to float
+    x = x * (1.5f - xhalf * x * x); // Newton step, repeating increases accuracy
+    x = x * (1.5f - xhalf * x * x); // Newton step, repeating increases accuracy
+    return x;
 }
 
 //---------------------------------------------------------------------------
 inline float am_finvsqrt2(float x)  // 6E-7 on sqrt(220.54)
 //http://www.codemaestro.com/reviews/review00000105.html
 {
-  float xhalf = 0.5f*x;
-  int i = *(int*)&x; // get bits for floating value
-  i = 0x5f375a86- (i>>1); // gives initial guess y0
-  x = *(float*)&i; // convert bits back to float
-  x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
-  x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
-  return x;
+    float xhalf = 0.5f * x;
+    int i = *(int*)&x; // get bits for floating value
+    i = 0x5f375a86 - (i >> 1); // gives initial guess y0
+    x = *(float*)&i; // convert bits back to float
+    x = x * (1.5f - xhalf * x * x); // Newton step, repeating increases accuracy
+    x = x * (1.5f - xhalf * x * x); // Newton step, repeating increases accuracy
+    return x;
 }
 
 
 //---------------------------------------------------------------------------
-inline float am_froot(float f,int n) // 0.04 general root
+inline float am_froot(float f, int n) // 0.04 general root
 //http://www.musicdsp.org/showone.php?id=133
 {
-  long *lp,l;
-  lp=(long*)(&f);
-  l=*lp;
-  l-=0x3F800000l;
-  l>>=(n-1);
-  l+=0x3F800000l;
-  *lp=l;
-  return f;
+    long* lp, l;
+    lp = (long*)(&f);
+    l = *lp;
+    l -= 0x3F800000l;
+    l >>= (n - 1);
+    l += 0x3F800000l;
+    *lp = l;
+    return f;
 }
 //---------------------------------------------------------------------------
 

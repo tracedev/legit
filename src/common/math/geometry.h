@@ -50,259 +50,231 @@ typedef Rect_<float> Rect4f;
 // First coordinate is column, the second one is row!
 // OpenCV matrix: fist coordinate row, second one column
 
-typedef struct Matrix2f_
-{
-  float m00;
-  float m01;
-  float m10;
-  float m11;
+typedef struct Matrix2f_ {
+    float m00;
+    float m01;
+    float m10;
+    float m11;
 } Matrix2f;
 
-typedef struct Matrix3f_
-{
-  float m00;
-  float m01;
-  float m02;
-  float m10;
-  float m11;
-  float m12;
-  float m20;
-  float m21;
-  float m22;
+typedef struct Matrix3f_ {
+    float m00;
+    float m01;
+    float m02;
+    float m10;
+    float m11;
+    float m12;
+    float m20;
+    float m21;
+    float m22;
 } Matrix3f;
 
-inline cv::Rect operator+(cv::Rect r, cv::Point p)
-{
-  r.x += p.x;
-  r.y += p.y;
-  return r;
+inline cv::Rect operator+(cv::Rect r, cv::Point p) {
+    r.x += p.x;
+    r.y += p.y;
+    return r;
 }
 
-inline cv::Rect operator-(cv::Rect r, cv::Point p)
-{
-  r.x -= p.x;
-  r.y -= p.y;
-  return r;
+inline cv::Rect operator-(cv::Rect r, cv::Point p) {
+    r.x -= p.x;
+    r.y -= p.y;
+    return r;
 }
 
-inline cv::Rect operator*(cv::Rect r, float p)
-{
-  r.x *= p;
-  r.y *= p;
-  r.width *= p;
-  r.height *= p;
-  return r;
+inline cv::Rect operator*(cv::Rect r, float p) {
+    r.x *= p;
+    r.y *= p;
+    r.width *= p;
+    r.height *= p;
+    return r;
 }
 
-inline cv::Rect operator/(cv::Rect r, float p)
-{
-  r.x /= p;
-  r.y /= p;
-  r.width /= p;
-  r.height /= p;
-  return r;
+inline cv::Rect operator/(cv::Rect r, float p) {
+    r.x /= p;
+    r.y /= p;
+    r.width /= p;
+    r.height /= p;
+    return r;
 }
 
-inline Rect4f operator+(Rect4f r, cv::Point2f p)
-{
-  r.x += p.x;
-  r.y += p.y;
-  return r;
+inline Rect4f operator+(Rect4f r, cv::Point2f p) {
+    r.x += p.x;
+    r.y += p.y;
+    return r;
 }
 
-inline Rect4f operator-(Rect4f r, cv::Point2f p)
-{
-  r.x -= p.x;
-  r.y -= p.y;
-  return r;
+inline Rect4f operator-(Rect4f r, cv::Point2f p) {
+    r.x -= p.x;
+    r.y -= p.y;
+    return r;
 }
 
-inline Matrix2f operator*(Matrix2f m, float factor)
-{
-  Matrix2f r;
+inline Matrix2f operator*(Matrix2f m, float factor) {
+    Matrix2f r;
 
-  r.m00 = m.m00 * factor;
-  r.m10 = m.m10 * factor;
-  r.m01 = m.m01 * factor;
-  r.m11 = m.m11 * factor;
+    r.m00 = m.m00 * factor;
+    r.m10 = m.m10 * factor;
+    r.m01 = m.m01 * factor;
+    r.m11 = m.m11 * factor;
 
-  return r;
+    return r;
 }
 
-inline Matrix2f operator/(Matrix2f m, float factor)
-{
-  Matrix2f r;
+inline Matrix2f operator/(Matrix2f m, float factor) {
+    Matrix2f r;
 
-  r.m00 = m.m00 / factor;
-  r.m10 = m.m10 / factor;
-  r.m01 = m.m01 / factor;
-  r.m11 = m.m11 / factor;
+    r.m00 = m.m00 / factor;
+    r.m10 = m.m10 / factor;
+    r.m01 = m.m01 / factor;
+    r.m11 = m.m11 / factor;
 
-  return r;
+    return r;
 
 
 }
 
-inline cv::Point2f operator*(cv::Point2f p, Matrix2f m)
-{
+inline cv::Point2f operator*(cv::Point2f p, Matrix2f m) {
 
-  cv::Point2f r;
+    cv::Point2f r;
 
-  r.x = m.m00 * p.x + m.m10 * p.y;
-  r.y = m.m01 * p.x + m.m11 * p.y;
+    r.x = m.m00 * p.x + m.m10 * p.y;
+    r.y = m.m01 * p.x + m.m11 * p.y;
 
-  return r;
+    return r;
 }
 
-inline cv::Point2f operator*(cv::Point2f p, Matrix3f m)
-{
+inline cv::Point2f operator*(cv::Point2f p, Matrix3f m) {
 
-  cv::Point2f r;
+    cv::Point2f r;
 
-  r.x = m.m00 * p.x + m.m10 * p.y + m.m20;
-  r.y = m.m01 * p.x + m.m11 * p.y + m.m21;
+    r.x = m.m00 * p.x + m.m10 * p.y + m.m20;
+    r.y = m.m01 * p.x + m.m11 * p.y + m.m21;
 
-  return r;
+    return r;
 }
 
-inline cv::Point operator+=(cv::Point p, cv::Point2f p1)
-{
+inline cv::Point operator+=(cv::Point p, cv::Point2f p1) {
 
-  p.x += (int) p1.x;
-  p.y += (int) p1.y;
+    p.x += (int) p1.x;
+    p.y += (int) p1.y;
 
-  return p;
+    return p;
 
 }
 
-inline cv::Point operator-=(cv::Point p, cv::Point2f p1)
-{
+inline cv::Point operator-=(cv::Point p, cv::Point2f p1) {
 
-  p.x -= (int) p1.x;
-  p.y -= (int) p1.y;
+    p.x -= (int) p1.x;
+    p.y -= (int) p1.y;
 
-  return p;
+    return p;
 }
 
-inline cv::Point operator+(cv::Point p, cv::Size sz)
-{
+inline cv::Point operator+(cv::Point p, cv::Size sz) {
 
-  p.x += sz.width;
-  p.y += sz.height;
+    p.x += sz.width;
+    p.y += sz.height;
 
-  return p;
+    return p;
 
 }
 
-inline cv::Point operator-(cv::Point p, cv::Size sz)
-{
+inline cv::Point operator-(cv::Point p, cv::Size sz) {
 
-  p.x -= sz.width;
-  p.y -= sz.height;
+    p.x -= sz.width;
+    p.y -= sz.height;
 
-  return p;
+    return p;
 }
 
-inline cv::Point operator+(cv::Point p, int a)
-{
+inline cv::Point operator+(cv::Point p, int a) {
 
-  p.x += a;
-  p.y += a;
+    p.x += a;
+    p.y += a;
 
-  return p;
+    return p;
 }
 
-inline cv::Point operator+=(cv::Point p, int a)
-{
+inline cv::Point operator+=(cv::Point p, int a) {
 
-  p.x += a;
-  p.y += a;
+    p.x += a;
+    p.y += a;
 
-  return p;
+    return p;
 }
 
-inline cv::Point operator-(cv::Point p, int a)
-{
+inline cv::Point operator-(cv::Point p, int a) {
 
-  p.x -= a;
-  p.y -= a;
+    p.x -= a;
+    p.y -= a;
 
-  return p;
+    return p;
 }
 
-inline cv::Point operator-=(cv::Point p, int a)
-{
+inline cv::Point operator-=(cv::Point p, int a) {
 
-  p.x -= a;
-  p.y -= a;
+    p.x -= a;
+    p.y -= a;
 
-  return p;
+    return p;
 }
 
-inline cv::Point operator/(cv::Point p, int a)
-{
+inline cv::Point operator/(cv::Point p, int a) {
 
-  p.x /= a;
-  p.y /= a;
+    p.x /= a;
+    p.y /= a;
 
-  return p;
+    return p;
 }
 
-inline cv::Point operator/=(cv::Point p, int a)
-{
+inline cv::Point operator/=(cv::Point p, int a) {
 
-  p.x /= a;
-  p.y /= a;
+    p.x /= a;
+    p.y /= a;
 
-  return p;
+    return p;
 }
 
 
 Matrix3f operator|(Matrix2f sr, Point2f t);
 
-inline bool operator==(cv::Point p1, cv::Point p2)
-{
-  return p1.x == p2.x && p1.y == p2.y;
+inline bool operator==(cv::Point p1, cv::Point p2) {
+    return p1.x == p2.x && p1.y == p2.y;
 }
 
-inline bool operator==(Point2f p1, Point2f p2)
-{
-  return p1.x == p2.x && p1.y == p2.y;
+inline bool operator==(Point2f p1, Point2f p2) {
+    return p1.x == p2.x && p1.y == p2.y;
 }
 
 Mat expand(const Matrix3f m);
 
 Mat expand(const Matrix2f m);
 
-inline bool isnan_matrix(Matrix3f m)
-{
-  return isnan(m.m00) || isnan(m.m10) || isnan(m.m20) || isnan(m.m01) || isnan(m.m11) || isnan(m.m21) || isnan(m.m02) || isnan(m.m12) || isnan(m.m22);
+inline bool isnan_matrix(Matrix3f m) {
+    return isnan(m.m00) || isnan(m.m10) || isnan(m.m20) || isnan(m.m01) || isnan(m.m11) || isnan(m.m21) || isnan(m.m02) || isnan(m.m12) || isnan(m.m22);
 }
 
-inline bool isnan_matrix(Matrix2f m)
-{
-  return isnan(m.m00) || isnan(m.m10) || isnan(m.m01) || isnan(m.m11);
+inline bool isnan_matrix(Matrix2f m) {
+    return isnan(m.m00) || isnan(m.m10) || isnan(m.m01) || isnan(m.m11);
 }
 
-inline bool set_identity(Matrix3f& m)
-{
-  m.m00 = 1;
-  m.m10 = 0;
-  m.m20 = 0;
-  m.m01 = 0;
-  m.m11 = 1;
-  m.m21 = 0;
-  m.m02 = 0;
-  m.m12 = 0;
-  m.m22 = 1;
+inline bool set_identity(Matrix3f& m) {
+    m.m00 = 1;
+    m.m10 = 0;
+    m.m20 = 0;
+    m.m01 = 0;
+    m.m11 = 1;
+    m.m21 = 0;
+    m.m02 = 0;
+    m.m12 = 0;
+    m.m22 = 1;
 }
 
-inline void set_identity(Matrix2f& m)
-{
-  m.m00 = 1;
-  m.m10 = 0;
-  m.m01 = 0;
-  m.m11 = 1;
+inline void set_identity(Matrix2f& m) {
+    m.m00 = 1;
+    m.m10 = 0;
+    m.m01 = 0;
+    m.m11 = 1;
 }
 
 float determinant(Matrix2f m);
