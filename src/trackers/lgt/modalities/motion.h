@@ -28,49 +28,46 @@ using namespace cv;
 using namespace std;
 using namespace legit::common;
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
+    namespace tracker {
 
-class ModalityMotionLK : public Modality
-{
+        class ModalityMotionLK : public Modality {
 
-public:
-  ModalityMotionLK(Config& config, string configbase);
-  ~ModalityMotionLK();
+        public:
+            ModalityMotionLK(Config& config, string configbase);
+            ~ModalityMotionLK();
 
-  virtual void flush();
+            virtual void flush();
 
-  virtual void update(Image& image, PatchSet* patches, cv::Rect bounds);
+            virtual void update(Image& image, PatchSet* patches, cv::Rect bounds);
 
-  virtual bool usable();
+            virtual bool usable();
 
-  virtual void probability(Image& image, Mat& p);
+            virtual void probability(Image& image, Mat& p);
 
-private:
-  int step;
+        private:
+            int step;
 
-  Buffer<Ptr<Mat> > history;
+            Buffer<Ptr<Mat> > history;
 
-  Buffer<Point2f> motion;
+            Buffer<Point2f> motion;
 
-  int block_size;
-  int aperture_size;
+            int block_size;
+            int aperture_size;
 
-  float damping;
-  float persistence;
+            float damping;
+            float persistence;
 
-  int levels;
-  int window_size;
+            int levels;
+            int window_size;
 
-  //Ptr<FilterEngine> gaussian;
+            //Ptr<FilterEngine> gaussian;
 
-  Mat map;
-};
+            Mat map;
+        };
 
-}
+    }
 
 }
 

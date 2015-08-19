@@ -27,61 +27,57 @@ using namespace cv;
 using namespace std;
 using namespace legit::common;
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
+    namespace tracker {
 
-class ModalityConvex : public Modality
-{
+        class ModalityConvex : public Modality {
 
-public:
-  ModalityConvex(Config& config, string configbase);
-  ~ModalityConvex();
+        public:
+            ModalityConvex(Config& config, string configbase);
+            ~ModalityConvex();
 
-  virtual void flush();
+            virtual void flush();
 
-  virtual void update(Image& image, PatchSet* patches, cv::Rect bounds);
+            virtual void update(Image& image, PatchSet* patches, cv::Rect bounds);
 
-  virtual bool usable();
+            virtual bool usable();
 
-  virtual void probability(Image& image, Mat& p);
+            virtual void probability(Image& image, Mat& p);
 
-private:
-  float persistence;
+        private:
+            float persistence;
 
-  float margin_diminish;
+            float margin_diminish;
 
-  int margin;
+            int margin;
 
-  Mat history;
+            Mat history;
 
-};
+        };
 
-class ModalityBounding : public Modality
-{
+        class ModalityBounding : public Modality {
 
-public:
-  ModalityBounding(Config& config, string configbase);
-  ~ModalityBounding();
+        public:
+            ModalityBounding(Config& config, string configbase);
+            ~ModalityBounding();
 
-  virtual void flush();
+            virtual void flush();
 
-  virtual void update(Image& image, PatchSet* patches, cv::Rect bounds);
+            virtual void update(Image& image, PatchSet* patches, cv::Rect bounds);
 
-  virtual bool usable();
+            virtual bool usable();
 
-  virtual void probability(Image& image, Mat& p);
+            virtual void probability(Image& image, Mat& p);
 
-private:
+        private:
 
-  int margin;
+            int margin;
 
-  Rect4f bounds;
-};
+            Rect4f bounds;
+        };
 
-}
+    }
 
 }
 

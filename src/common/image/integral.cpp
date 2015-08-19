@@ -29,252 +29,229 @@
 
 #include "common/image/integral.h"
 
-namespace legit
-{
+namespace legit {
 
-namespace common
-{
+    namespace common {
 
-IntegralImage::IntegralImage(Mat& src) : data(NULL)
-{
+        IntegralImage::IntegralImage(Mat& src) : data(NULL) {
 
-  update(src);
+            update(src);
 
-}
-
-IntegralImage::IntegralImage(Mat& src, float threshold) : data(NULL)
-{
-
-  update(src, threshold);
-
-}
-
-
-IntegralImage::~IntegralImage()
-{
-
-  if (data)
-    {
-      delete [] data;
-    }
-
-}
-
-void IntegralImage::update(Mat& src)
-{
-
-  if (!data || (src.cols != width || src.rows != height))
-    {
-      if (data)
-        delete [] data;
-
-      width = src.cols;
-      height = src.rows;
-
-      data = new uint32_t[width * height];
-    }
-
-  memset(data, 0, width * height * sizeof(uint32_t));
-
-  uchar* src_current = src.ptr<uchar>(0);
-  uint32_t* dst_current = data;
-
-  uint32_t row_sum = 0;
-  for (int i = 0; i < width; i++)
-    {
-      dst_current[i] = row_sum;
-      row_sum += src_current[i];
-    }
-
-  uint32_t* dst_previous = dst_current;
-  dst_current += width;
-  for (int j = 1; j < height; j++)
-    {
-      src_current = src.ptr<uchar>(j);
-
-      uint32_t row_sum = 0;
-
-      for (int i = 0; i < width; i++)
-        {
-          dst_current[i] = row_sum + dst_previous[i];
-          row_sum += src_current[i];
         }
 
-      dst_previous = dst_current;
-      dst_current += width;
-    }
+        IntegralImage::IntegralImage(Mat& src, float threshold) : data(NULL) {
 
-}
+            update(src, threshold);
 
-void IntegralImage::update(Mat& src, float threshold)
-{
-
-  if (!data || (src.cols != width || src.rows != height))
-    {
-      if (data)
-        delete [] data;
-
-      width = src.cols;
-      height = src.rows;
-
-      data = new uint32_t[width * height];
-    }
-
-  memset(data, 0, width * height * sizeof(uint32_t));
-
-  float* src_current = src.ptr<float>(0);
-  uint32_t* dst_current = data;
-
-  uint32_t row_sum = 0;
-  for (int i = 0; i < width; i++)
-    {
-      dst_current[i] = row_sum;
-      row_sum += (src_current[i] > threshold) ? 1 : 0;
-    }
-
-  uint32_t* dst_previous = dst_current;
-  dst_current += width;
-  for (int j = 1; j < height; j++)
-    {
-      src_current = src.ptr<float>(j);
-
-      uint32_t row_sum = 0;
-
-      for (int i = 0; i < width; i++)
-        {
-          dst_current[i] = row_sum + dst_previous[i];
-          row_sum += (src_current[i] > threshold) ? 1 : 0;
         }
 
-      dst_previous = dst_current;
-      dst_current += width;
-    }
 
-}
+        IntegralImage::~IntegralImage() {
 
-void IntegralImage::print()
-{
-
-  printf("Integral image: \n");
-
-  for (int j = 0; j < height; j++)
-    {
-
-      for (int i = 0; i < width; i++)
-        {
-          printf("%03d ", data[j * width + i]);
-        }
-
-      printf("\n");
-
-    }
-
-}
-
-IntegralHistogram::IntegralHistogram(Mat& src, int bins) : data(NULL), bins(bins)
-{
-
-
-  switch(bins)
-    {
-    case 16:
-      shift = 4;
-      break;
-    case 32:
-      shift = 3;
-      break;
-    default:
-      throw LegitException("Unsupported bins number");
-    }
-
-  update(src);
-
-}
-
-IntegralHistogram::~IntegralHistogram()
-{
-
-  if (data)
-    {
-      delete [] data;
-
-    }
-}
-
-void IntegralHistogram::update(Mat& src)
-{
-
-  if (!data || (src.cols != width || src.rows != height))
-    {
-      if (data)
-        delete [] data;
-
-      width = src.cols;
-      height = src.rows;
-
-      data = new uint32_t[width * height * bins];
-
-    }
-
-  memset(data, 0, width * height * bins * sizeof(uint32_t));
-
-  uchar* src_current = src.ptr<uchar>(0);
-  uint32_t* dst_current = data;
-
-  uint32_t* row_sum = new uint32_t[bins];
-  memset(row_sum, 0, bins * sizeof(uint32_t));
-
-  for (int i = 0; i < width; i++)
-    {
-      for (int b = 0; b < bins; b++)
-        dst_current[b] = row_sum[b];
-      row_sum[src_current[i] >> shift]++;
-      dst_current += bins;
-    }
-
-  uint32_t* dst_previous = data;
-  for (int j = 1; j < height; j++)
-    {
-      src_current = src.ptr<uchar>(j);
-
-      memset(row_sum, 0, bins * sizeof(uint32_t));
-
-      for (int i = 0; i < width; i++)
-        {
-          for (int b = 0; b < bins; b++)
-            {
-              dst_current[b] = row_sum[b] + dst_previous[b];
+            if (data) {
+                delete [] data;
             }
-          dst_current += bins;
-          dst_previous += bins;
-          row_sum[src_current[i] >> shift]++;
+
+        }
+
+        void IntegralImage::update(Mat& src) {
+
+            if (!data || (src.cols != width || src.rows != height)) {
+                if (data)
+                { delete [] data; }
+
+                width = src.cols;
+                height = src.rows;
+
+                data = new uint32_t[width * height];
+            }
+
+            memset(data, 0, width * height * sizeof(uint32_t));
+
+            uchar* src_current = src.ptr<uchar>(0);
+            uint32_t* dst_current = data;
+
+            uint32_t row_sum = 0;
+
+            for (int i = 0; i < width; i++) {
+                dst_current[i] = row_sum;
+                row_sum += src_current[i];
+            }
+
+            uint32_t* dst_previous = dst_current;
+            dst_current += width;
+
+            for (int j = 1; j < height; j++) {
+                src_current = src.ptr<uchar>(j);
+
+                uint32_t row_sum = 0;
+
+                for (int i = 0; i < width; i++) {
+                    dst_current[i] = row_sum + dst_previous[i];
+                    row_sum += src_current[i];
+                }
+
+                dst_previous = dst_current;
+                dst_current += width;
+            }
+
+        }
+
+        void IntegralImage::update(Mat& src, float threshold) {
+
+            if (!data || (src.cols != width || src.rows != height)) {
+                if (data)
+                { delete [] data; }
+
+                width = src.cols;
+                height = src.rows;
+
+                data = new uint32_t[width * height];
+            }
+
+            memset(data, 0, width * height * sizeof(uint32_t));
+
+            float* src_current = src.ptr<float>(0);
+            uint32_t* dst_current = data;
+
+            uint32_t row_sum = 0;
+
+            for (int i = 0; i < width; i++) {
+                dst_current[i] = row_sum;
+                row_sum += (src_current[i] > threshold) ? 1 : 0;
+            }
+
+            uint32_t* dst_previous = dst_current;
+            dst_current += width;
+
+            for (int j = 1; j < height; j++) {
+                src_current = src.ptr<float>(j);
+
+                uint32_t row_sum = 0;
+
+                for (int i = 0; i < width; i++) {
+                    dst_current[i] = row_sum + dst_previous[i];
+                    row_sum += (src_current[i] > threshold) ? 1 : 0;
+                }
+
+                dst_previous = dst_current;
+                dst_current += width;
+            }
+
+        }
+
+        void IntegralImage::print() {
+
+            printf("Integral image: \n");
+
+            for (int j = 0; j < height; j++) {
+
+                for (int i = 0; i < width; i++) {
+                    printf("%03d ", data[j * width + i]);
+                }
+
+                printf("\n");
+
+            }
+
+        }
+
+        IntegralHistogram::IntegralHistogram(Mat& src, int bins) : data(NULL), bins(bins) {
+
+
+            switch (bins) {
+                case 16:
+                    shift = 4;
+                    break;
+
+                case 32:
+                    shift = 3;
+                    break;
+
+                default:
+                    throw LegitException("Unsupported bins number");
+            }
+
+            update(src);
+
+        }
+
+        IntegralHistogram::~IntegralHistogram() {
+
+            if (data) {
+                delete [] data;
+
+            }
+        }
+
+        void IntegralHistogram::update(Mat& src) {
+
+            if (!data || (src.cols != width || src.rows != height)) {
+                if (data)
+                { delete [] data; }
+
+                width = src.cols;
+                height = src.rows;
+
+                data = new uint32_t[width * height * bins];
+
+            }
+
+            memset(data, 0, width * height * bins * sizeof(uint32_t));
+
+            uchar* src_current = src.ptr<uchar>(0);
+            uint32_t* dst_current = data;
+
+            uint32_t* row_sum = new uint32_t[bins];
+            memset(row_sum, 0, bins * sizeof(uint32_t));
+
+            for (int i = 0; i < width; i++) {
+                for (int b = 0; b < bins; b++)
+                { dst_current[b] = row_sum[b]; }
+
+                row_sum[src_current[i] >> shift]++;
+                dst_current += bins;
+            }
+
+            uint32_t* dst_previous = data;
+
+            for (int j = 1; j < height; j++) {
+                src_current = src.ptr<uchar>(j);
+
+                memset(row_sum, 0, bins * sizeof(uint32_t));
+
+                for (int i = 0; i < width; i++) {
+                    for (int b = 0; b < bins; b++) {
+                        dst_current[b] = row_sum[b] + dst_previous[b];
+                    }
+
+                    dst_current += bins;
+                    dst_previous += bins;
+                    row_sum[src_current[i] >> shift]++;
+                }
+
+            }
+
+            delete [] row_sum;
+        }
+
+        void IntegralHistogram::print(int bin) {
+
+            printf("Integral histogram (bin %d): \n", bin);
+
+            for (int j = 0; j < height; j++) {
+
+                for (int i = 0; i < width; i++) {
+                    printf("%02d ", data[(j * width + i) * bins + bin]);
+                }
+
+                printf("\n");
+
+            }
+
         }
 
     }
-
-  delete [] row_sum;
-}
-
-void IntegralHistogram::print(int bin)
-{
-
-  printf("Integral histogram (bin %d): \n", bin);
-
-  for (int j = 0; j < height; j++)
-    {
-
-      for (int i = 0; i < width; i++)
-        {
-          printf("%02d ", data[(j * width + i) * bins + bin]);
-        }
-
-      printf("\n");
-
-    }
-
-}
-
-}
 
 }
 

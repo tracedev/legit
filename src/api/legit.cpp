@@ -34,183 +34,163 @@ using namespace legit::tracker;
 
 bool __random_init = false;
 
-class LegitTracker::Impl
-{
+class LegitTracker::Impl {
 public:
-  Impl() : image(), initialized(false), tracker()
-  {
+    Impl() : image(), initialized(false), tracker() {
 
-    if (!__random_init)
-      {
-        RANDOM_SEED(time(NULL));
-        __random_init = true;
-      }
+        if (!__random_init) {
+            RANDOM_SEED(time(NULL));
+            __random_init = true;
+        }
 
-  }
-  ~Impl() {}
+    }
+    ~Impl() {}
 
-  Ptr<Tracker> tracker;
+    Ptr<Tracker> tracker;
 
-  Image image;
+    Image image;
 
-  bool initialized;
+    bool initialized;
 };
 
-LegitTracker::LegitTracker(const char*  id)
-{
+LegitTracker::LegitTracker(const char*  id) {
 
-  impl = Ptr<Impl>(new Impl());
+    impl = Ptr<Impl>(new Impl());
 
-  Config cfg;
-  istringstream configStream("tracker = lgt \n tracker.focus = false \n tracker.verbosity = 2");
-  configStream >> cfg;
+    Config cfg;
+    istringstream configStream("tracker = lgt \n tracker.focus = false \n tracker.verbosity = 2");
+    configStream >> cfg;
 
 
-  if (!cfg.keyExists("tracker"))
-    throw LegitException("Unknown tracker type");
+    if (!cfg.keyExists("tracker"))
+    { throw LegitException("Unknown tracker type"); }
 
-  impl->tracker = Ptr<Tracker>(create_tracker(cfg.read<string>("tracker"), cfg, id));
+    impl->tracker = Ptr<Tracker>(create_tracker(cfg.read<string>("tracker"), cfg, id));
 
-  if (!impl->tracker)
-    throw LegitException("Unable to create tracker");
+    if (!impl->tracker)
+    { throw LegitException("Unable to create tracker"); }
 }
 
-LegitTracker::~LegitTracker()
-{
+LegitTracker::~LegitTracker() {
 
-
-}
-
-void LegitTracker::clear_image()
-{
-
-  impl->image.reset();
 
 }
 
-void LegitTracker::update_image(Mat& image, int imagetype)
-{
+void LegitTracker::clear_image() {
 
-  if (imagetype > -1)
-    impl->image.update(image, imagetype, false);
-  else
-    impl->image.update(image);
+    impl->image.reset();
 
 }
 
-void LegitTracker::initialize(cv::Rect region)
-{
+void LegitTracker::update_image(Mat& image, int imagetype) {
 
-  if (impl->image.empty())
-    return;
-
-  impl->tracker->initialize(impl->image, region);
-
-  impl->initialized = true;
+    if (imagetype > -1)
+    { impl->image.update(image, imagetype, false); }
+    else
+    { impl->image.update(image); }
 
 }
 
-void LegitTracker::update()
-{
+void LegitTracker::initialize(cv::Rect region) {
 
-  if (!impl->initialized)
-    return;
+    if (impl->image.empty())
+    { return; }
 
-  if (impl->image.empty())
-    return;
+    impl->tracker->initialize(impl->image, region);
 
-  impl->tracker->update(impl->image);
+    impl->initialized = true;
 
 }
 
-void LegitTracker::initialize(Mat& image, cv::Rect region)
-{
+void LegitTracker::update() {
 
-  impl->image.reset();
-  update_image(image, -1);
+    if (!impl->initialized)
+    { return; }
 
-  initialize(region);
+    if (impl->image.empty())
+    { return; }
 
-}
-
-void LegitTracker::update(Mat& image)
-{
-
-  impl->image.reset();
-  update_image(image, -1);
-
-  update();
+    impl->tracker->update(impl->image);
 
 }
 
-cv::Rect LegitTracker::region()
-{
+void LegitTracker::initialize(Mat& image, cv::Rect region) {
 
-  return impl->tracker->region();
+    impl->image.reset();
+    update_image(image, -1);
 
-}
-
-cv::Point2f LegitTracker::position()
-{
-
-  return impl->tracker->position();
+    initialize(region);
 
 }
 
-bool LegitTracker::is_tracking()
-{
+void LegitTracker::update(Mat& image) {
 
-  return impl->tracker->is_tracking();
+    impl->image.reset();
+    update_image(image, -1);
 
-}
-
-void LegitTracker::visualize(Mat& img)
-{
-
-  if (!impl->initialized)
-    return;
-
-  impl->image.get_rgb().copyTo(img);
-
-  ImageCanvas canvas(img);
-
-  impl->tracker->visualize(canvas);
+    update();
 
 }
 
-string LegitTracker::get_name()
-{
+cv::Rect LegitTracker::region() {
 
-  return impl->tracker->get_name();
+    return impl->tracker->region();
+
+}
+
+cv::Point2f LegitTracker::position() {
+
+    return impl->tracker->position();
+
+}
+
+bool LegitTracker::is_tracking() {
+
+    return impl->tracker->is_tracking();
+
+}
+
+void LegitTracker::visualize(Mat& img) {
+
+    if (!impl->initialized)
+    { return; }
+
+    impl->image.get_rgb().copyTo(img);
+
+    ImageCanvas canvas(img);
+
+    impl->tracker->visualize(canvas);
+
+}
+
+string LegitTracker::get_name() {
+
+    return impl->tracker->get_name();
 
 }
 
 
-void LegitTracker::set_property(int code, float value)
-{
+void LegitTracker::set_property(int code, float value) {
 
-  impl->tracker->set_property(code, value);
-
-}
-
-float LegitTracker::get_property(int code)
-{
-
-  return impl->tracker->get_property(code);
+    impl->tracker->set_property(code, value);
 
 }
 
-void LegitTracker::remove_property(int code)
-{
+float LegitTracker::get_property(int code) {
 
-  impl->tracker->remove_property(code);
+    return impl->tracker->get_property(code);
 
 }
 
-bool LegitTracker::has_property(int code)
-{
+void LegitTracker::remove_property(int code) {
 
-  return impl->tracker->has_property(code);
+    impl->tracker->remove_property(code);
+
+}
+
+bool LegitTracker::has_property(int code) {
+
+    return impl->tracker->has_property(code);
 
 }
 

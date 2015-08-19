@@ -32,74 +32,68 @@ using namespace cv;
 using namespace std;
 using namespace legit::common;
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
+    namespace tracker {
 
-class ReliablePatchesFilter : public Filter
-{
-public:
-  ReliablePatchesFilter(float weight, int age) : weight(weight), age(age) {}
-  ~ReliablePatchesFilter() {}
-  virtual bool operator() (Ptr<Patch>& patch)
-  {
-    return (patch->get_weight(0) > weight && patch->get_age() > age);
-  }
-private:
-  float weight;
-  int age;
-};
+        class ReliablePatchesFilter : public Filter {
+        public:
+            ReliablePatchesFilter(float weight, int age) : weight(weight), age(age) {}
+            ~ReliablePatchesFilter() {}
+            virtual bool operator() (Ptr<Patch>& patch) {
+                return (patch->get_weight(0) > weight && patch->get_age() > age);
+            }
+        private:
+            float weight;
+            int age;
+        };
 
-class Modality
-{
-public:
-  Modality(Config& config, string configbase);
+        class Modality {
+        public:
+            Modality(Config& config, string configbase);
 
-  virtual void flush() = 0;
+            virtual void flush() = 0;
 
-  virtual void update(Image& image, PatchSet* patches, cv::Rect bounds) = 0;
+            virtual void update(Image& image, PatchSet* patches, cv::Rect bounds) = 0;
 
-  virtual bool usable() = 0;
+            virtual bool usable() = 0;
 
-  virtual void probability(Image& image, Mat& p) = 0;
+            virtual void probability(Image& image, Mat& p) = 0;
 
-  //virtual string get_name() = 0;
+            //virtual string get_name() = 0;
 
-protected:
+        protected:
 
-  Ptr<ReliablePatchesFilter> reliablePatchesFilter;
+            Ptr<ReliablePatchesFilter> reliablePatchesFilter;
 
 
-};
+        };
 
-class Modalities
-{
+        class Modalities {
 
-public:
+        public:
 
-  Modalities(Config& config);
-  ~Modalities();
+            Modalities(Config& config);
+            ~Modalities();
 
-  void flush();
+            void flush();
 
-  void update(Image& image, PatchSet* patches, cv::Rect bounds);
+            void update(Image& image, PatchSet* patches, cv::Rect bounds);
 
-  void probability(Image& image, Mat& p);
+            void probability(Image& image, Mat& p);
 
-  void probability(Image& image, Mat& p, int i);
+            void probability(Image& image, Mat& p, int i);
 
-  int size();
+            int size();
 
-protected:
+        protected:
 
-  vector<Ptr<Modality> > modalities;
+            vector<Ptr<Modality> > modalities;
 
 
-};
+        };
 
-}
+    }
 
 }
 

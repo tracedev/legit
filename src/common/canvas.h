@@ -44,200 +44,187 @@
 
 using namespace cv;
 
-namespace legit
-{
+namespace legit {
 
-namespace common
-{
+    namespace common {
 
-void drawcross(Mat& image, cv::Point center, Scalar color, int size = 3, bool sideways = false);
+        void drawcross(Mat& image, cv::Point center, Scalar color, int size = 3, bool sideways = false);
 
-void drawellipse(Mat& image, cv::Point center, Matrix2f covariance, Scalar color, int width=1);
+        void drawellipse(Mat& image, cv::Point center, Matrix2f covariance, Scalar color, int width = 1);
 
-class Canvas
-{
-public:
+        class Canvas {
+        public:
 
-  Canvas() {};
+            Canvas() {};
 
-  ~Canvas() {};
+            ~Canvas() {};
 
-  virtual void resize(cv::Size size) {};
+            virtual void resize(cv::Size size) {};
 
-  virtual void clear() {};
+            virtual void clear() {};
 
-  virtual void draw(Mat& img, cv::Point offset=cv::Point(0, 0), int flags=0) {};
+            virtual void draw(Mat& img, cv::Point offset = cv::Point(0, 0), int flags = 0) {};
 
-  virtual void rectangle(cv::Point tl, cv::Point br, Scalar color, int width=1) {};
+            virtual void rectangle(cv::Point tl, cv::Point br, Scalar color, int width = 1) {};
 
-  virtual void rectangle(cv::Rect r, Scalar color, int width=1) {};
+            virtual void rectangle(cv::Rect r, Scalar color, int width = 1) {};
 
-  virtual void rectangle(RotatedRect r, Scalar color, int width=1) {};
+            virtual void rectangle(RotatedRect r, Scalar color, int width = 1) {};
 
-  virtual void line(cv::Point p1, cv::Point p2, Scalar color, int width=1) {};
+            virtual void line(cv::Point p1, cv::Point p2, Scalar color, int width = 1) {};
 
-  virtual void cross(cv::Point p, Scalar color, int size=3) {};
+            virtual void cross(cv::Point p, Scalar color, int size = 3) {};
 
-  virtual void ellipse(cv::Point center, Matrix2f covariance, Scalar color, int width=1) {};
+            virtual void ellipse(cv::Point center, Matrix2f covariance, Scalar color, int width = 1) {};
 
-  virtual void circle(cv::Point center, int radius, Scalar color, int width=1) {};
+            virtual void circle(cv::Point center, int radius, Scalar color, int width = 1) {};
 
-  virtual void text(cv::Point p, string str, Scalar color) { };
+            virtual void text(cv::Point p, string str, Scalar color) { };
 
-  virtual void set_zoom(float z) { };
+            virtual void set_zoom(float z) { };
 
-  virtual float get_zoom()
-  {
-    return 0;
-  }
+            virtual float get_zoom() {
+                return 0;
+            }
 
-  virtual int width()
-  {
-    return 0;
-  };
+            virtual int width() {
+                return 0;
+            };
 
-  virtual int height()
-  {
-    return 0;
-  };
+            virtual int height() {
+                return 0;
+            };
 
-  virtual void push(int times = 1) {};
+            virtual void push(int times = 1) {};
 
-};
+        };
 
-class ProxyCanvas : public Canvas
-{
-public:
+        class ProxyCanvas : public Canvas {
+        public:
 
-  ProxyCanvas(Canvas* canvas, cv::Point offset=cv::Point(0, 0)) : Canvas(), canvas(canvas), offset(offset) {};
+            ProxyCanvas(Canvas* canvas, cv::Point offset = cv::Point(0, 0)) : Canvas(), canvas(canvas), offset(offset) {};
 
-  ~ProxyCanvas() {};
+            ~ProxyCanvas() {};
 
-  virtual void resize(cv::Size size);
+            virtual void resize(cv::Size size);
 
-  virtual void clear();
+            virtual void clear();
 
-  virtual void draw(Mat& img, cv::Point offset=cv::Point(0, 0), int flags=0);
+            virtual void draw(Mat& img, cv::Point offset = cv::Point(0, 0), int flags = 0);
 
-  virtual void rectangle(cv::Point tl, cv::Point br, Scalar color, int width=1);
+            virtual void rectangle(cv::Point tl, cv::Point br, Scalar color, int width = 1);
 
-  virtual void rectangle(cv::Rect r, Scalar color, int width=1);
+            virtual void rectangle(cv::Rect r, Scalar color, int width = 1);
 
-  virtual void rectangle(RotatedRect r, Scalar color, int width=1);
+            virtual void rectangle(RotatedRect r, Scalar color, int width = 1);
 
-  virtual void line(cv::Point p1, cv::Point p2, Scalar color, int width=1);
+            virtual void line(cv::Point p1, cv::Point p2, Scalar color, int width = 1);
 
-  virtual void cross(cv::Point p, Scalar color, int size=3);
+            virtual void cross(cv::Point p, Scalar color, int size = 3);
 
-  virtual void ellipse(cv::Point center, Matrix2f covariance, Scalar color, int width=1);
+            virtual void ellipse(cv::Point center, Matrix2f covariance, Scalar color, int width = 1);
 
-  virtual void text(cv::Point p, string str, Scalar color);
+            virtual void text(cv::Point p, string str, Scalar color);
 
-  virtual void circle(cv::Point center, int radius, Scalar color, int width=1);
+            virtual void circle(cv::Point center, int radius, Scalar color, int width = 1);
 
-  virtual void set_zoom(float z);
+            virtual void set_zoom(float z);
 
-  virtual float get_zoom();
+            virtual float get_zoom();
 
-  virtual int width();
+            virtual int width();
 
-  virtual int height();
+            virtual int height();
 
-  virtual void push(int times = 1);
+            virtual void push(int times = 1);
 
-  void set_offset(cv::Point offset)
-  {
-    this->offset = offset;
-  }
+            void set_offset(cv::Point offset) {
+                this->offset = offset;
+            }
 
-  cv::Point get_offset()
-  {
-    return offset;
-  }
+            cv::Point get_offset() {
+                return offset;
+            }
 
-private:
+        private:
 
-  Canvas* canvas;
+            Canvas* canvas;
 
-  cv::Point offset;
+            cv::Point offset;
 
-};
+        };
 
 
-class ImageCanvas : public Canvas
-{
-public:
+        class ImageCanvas : public Canvas {
+        public:
 
-  ImageCanvas(cv::Size size);
+            ImageCanvas(cv::Size size);
 
-  ImageCanvas(Mat& image);
+            ImageCanvas(Mat& image);
 
-  ~ImageCanvas();
+            ~ImageCanvas();
 
-  virtual void resize(cv::Size size);
+            virtual void resize(cv::Size size);
 
-  virtual void clear();
+            virtual void clear();
 
-  virtual void draw(Mat& img, cv::Point offset=cv::Point(0, 0), int flags=0);
+            virtual void draw(Mat& img, cv::Point offset = cv::Point(0, 0), int flags = 0);
 
-  virtual void rectangle(cv::Point tl, cv::Point br, Scalar color, int width=1);
+            virtual void rectangle(cv::Point tl, cv::Point br, Scalar color, int width = 1);
 
-  virtual void rectangle(cv::Rect r, Scalar color, int width=1);
+            virtual void rectangle(cv::Rect r, Scalar color, int width = 1);
 
-  virtual void rectangle(RotatedRect r, Scalar color, int width=1);
+            virtual void rectangle(RotatedRect r, Scalar color, int width = 1);
 
-  virtual void line(cv::Point p1, cv::Point p2, Scalar color, int width=1);
+            virtual void line(cv::Point p1, cv::Point p2, Scalar color, int width = 1);
 
-  virtual void cross(cv::Point p, Scalar color, int size=3);
+            virtual void cross(cv::Point p, Scalar color, int size = 3);
 
-  virtual void ellipse(cv::Point center, Matrix2f covariance, Scalar color, int width=1);
+            virtual void ellipse(cv::Point center, Matrix2f covariance, Scalar color, int width = 1);
 
-  virtual void text(cv::Point p, string str, Scalar color);
+            virtual void text(cv::Point p, string str, Scalar color);
 
-  virtual void circle(cv::Point center, int radius, Scalar color, int width=1);
+            virtual void circle(cv::Point center, int radius, Scalar color, int width = 1);
 
-  virtual void set_zoom(float z)
-  {
-    zoom = MIN(5, MAX(0.5f, z));
-  };
+            virtual void set_zoom(float z) {
+                zoom = MIN(5, MAX(0.5f, z));
+            };
 
-  virtual float get_zoom()
-  {
-    return zoom;
-  }
+            virtual float get_zoom() {
+                return zoom;
+            }
 
-  virtual int width();
+            virtual int width();
 
-  virtual int height();
+            virtual int height();
 
-protected:
+        protected:
 
-  Mat image;
+            Mat image;
 
-  float zoom;
-};
+            float zoom;
+        };
 
-class VideoCanvas : public ImageCanvas
-{
-public:
+        class VideoCanvas : public ImageCanvas {
+        public:
 
-  VideoCanvas(string filename, int fps, cv::Size size, bool isColor);
+            VideoCanvas(string filename, int fps, cv::Size size, bool isColor);
 
-  ~VideoCanvas();
+            ~VideoCanvas();
 
-  virtual void resize(cv::Size size) {};
+            virtual void resize(cv::Size size) {};
 
-  virtual void push(int times = 1);
+            virtual void push(int times = 1);
 
-protected:
+        protected:
 
-  Ptr<VideoWriter> writer;
-};
+            Ptr<VideoWriter> writer;
+        };
 
-void canvas_draw_transformed_rectangle(Canvas& canvas, cv::Rect rectangle, Matrix3f transform, Scalar color, int width=1);
+        void canvas_draw_transformed_rectangle(Canvas& canvas, cv::Rect rectangle, Matrix3f transform, Scalar color, int width = 1);
 
 
-}
+    }
 
 }
 

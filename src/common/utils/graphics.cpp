@@ -29,89 +29,87 @@
 
 #include "graphics.h"
 
-namespace legit
-{
+namespace legit {
 
-namespace utils
-{
+    namespace utils {
 
-Scalar hsv_to_scalar( HSV hsv )
-{
-  int f;
-  long p, q, t;
-  RGB rgb;
+        Scalar hsv_to_scalar( HSV hsv ) {
+            int f;
+            long p, q, t;
+            RGB rgb;
 
-  if( hsv.s == 0 )
-    {
-      rgb.r = rgb.g = rgb.b = hsv.v;
-      return Scalar(rgb.b, rgb.g, rgb.r);
+            if ( hsv.s == 0 ) {
+                rgb.r = rgb.g = rgb.b = hsv.v;
+                return Scalar(rgb.b, rgb.g, rgb.r);
+            }
+
+            f = ((hsv.h % 60) * 255) / 60;
+            hsv.h /= 60;
+
+            p = (hsv.v * (256 - hsv.s)) / 256;
+            q = (hsv.v * ( 256 - (hsv.s * f) / 256 )) / 256;
+            t = (hsv.v * ( 256 - (hsv.s * ( 256 - f )) / 256)) / 256;
+
+            switch ( hsv.h ) {
+                case 0:
+                    rgb.r = hsv.v;
+                    rgb.g = t;
+                    rgb.b = p;
+                    break;
+
+                case 1:
+                    rgb.r = q;
+                    rgb.g = hsv.v;
+                    rgb.b = p;
+                    break;
+
+                case 2:
+                    rgb.r = p;
+                    rgb.g = hsv.v;
+                    rgb.b = t;
+                    break;
+
+                case 3:
+                    rgb.r = p;
+                    rgb.g = q;
+                    rgb.b = hsv.v;
+                    break;
+
+                case 4:
+                    rgb.r = t;
+                    rgb.g = p;
+                    rgb.b = hsv.v;
+                    break;
+
+                default:
+                    rgb.r = hsv.v;
+                    rgb.g = p;
+                    rgb.b = q;
+                    break;
+            }
+
+            return Scalar(rgb.b, rgb.g, rgb.r);
+        }
+
+
+        void create_palette(Scalar* dst, int length, int type) {
+
+
+            HSV base;
+            base.s = 255;
+            base.v = 255;
+
+            for (int i = 0; i < length; i++) {
+                base.h = RANDOM_UNIFORM * 360;
+                dst[i] = hsv_to_scalar( base );
+            }
+
+
+        }
+
+
+
+
     }
-
-  f = ((hsv.h%60)*255)/60;
-  hsv.h /= 60;
-
-  p = (hsv.v * (256 - hsv.s))/256;
-  q = (hsv.v * ( 256 - (hsv.s * f)/256 ))/256;
-  t = (hsv.v * ( 256 - (hsv.s * ( 256 - f ))/256))/256;
-
-  switch( hsv.h )
-    {
-    case 0:
-      rgb.r = hsv.v;
-      rgb.g = t;
-      rgb.b = p;
-      break;
-    case 1:
-      rgb.r = q;
-      rgb.g = hsv.v;
-      rgb.b = p;
-      break;
-    case 2:
-      rgb.r = p;
-      rgb.g = hsv.v;
-      rgb.b = t;
-      break;
-    case 3:
-      rgb.r = p;
-      rgb.g = q;
-      rgb.b = hsv.v;
-      break;
-    case 4:
-      rgb.r = t;
-      rgb.g = p;
-      rgb.b = hsv.v;
-      break;
-    default:
-      rgb.r = hsv.v;
-      rgb.g = p;
-      rgb.b = q;
-      break;
-    }
-
-  return Scalar(rgb.b, rgb.g, rgb.r);
-}
-
-
-void create_palette(Scalar* dst, int length, int type)
-{
-
-
-  HSV base;
-  base.s = 255;
-  base.v = 255;
-
-  for (int i = 0; i < length; i++)
-    {
-      base.h = RANDOM_UNIFORM * 360;
-      dst[i] = hsv_to_scalar( base );
-    }
-
-
-}
-
-
-
-
-}
 
 }

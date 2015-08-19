@@ -38,29 +38,25 @@
 using namespace std;
 using namespace cv;
 
-namespace legit
-{
+namespace legit {
 
-namespace utils
-{
+    namespace utils {
 
-typedef struct
-{
-  int r, g, b;    /* Channel intensities between 0.0 and 1.0 */
-} RGB;
+        typedef struct {
+            int r, g, b;    /* Channel intensities between 0.0 and 1.0 */
+        } RGB;
 
-typedef struct
-{
-  int h;        /* Hue degree between 0.0 and 360.0 */
-  int s;        /* Saturation between 0.0 (gray) and 1.0 */
-  int v;        /* Value between 0.0 (black) and 1.0 */
-} HSV;
+        typedef struct {
+            int h;        /* Hue degree between 0.0 and 360.0 */
+            int s;        /* Saturation between 0.0 (gray) and 1.0 */
+            int v;        /* Value between 0.0 (black) and 1.0 */
+        } HSV;
 
-Scalar hsv_to_scalar(HSV hsv);
+        Scalar hsv_to_scalar(HSV hsv);
 
-void create_palette(Scalar* dst, int length, int type = 0);
+        void create_palette(Scalar* dst, int length, int type = 0);
 
-}
+    }
 
 }
 

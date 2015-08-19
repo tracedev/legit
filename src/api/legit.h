@@ -45,44 +45,44 @@ class LegitTracker {
 
 public:
 
-  LegitTracker(const char* id = "default");
-  ~LegitTracker();
+    LegitTracker(const char* id = "default");
+    ~LegitTracker();
 
-  void clear_image();
+    void clear_image();
 
-  void update_image(Mat& image, int imagetype = -1);
+    void update_image(Mat& image, int imagetype = -1);
 
-  void initialize(cv::Rect region);
+    void initialize(cv::Rect region);
 
-  void update();
+    void update();
 
-  void initialize(Mat& image, cv::Rect region);
+    void initialize(Mat& image, cv::Rect region);
 
-  void update(Mat& image);
+    void update(Mat& image);
 
-  cv::Rect region();
+    cv::Rect region();
 
-  cv::Point2f position();
+    cv::Point2f position();
 
-  bool is_tracking();
+    bool is_tracking();
 
-  void visualize(Mat& canvas);
+    void visualize(Mat& canvas);
 
-  string get_name();
+    string get_name();
 
-  void set_property(int code, float value);
+    void set_property(int code, float value);
 
-  float get_property(int code);
+    float get_property(int code);
 
-  void remove_property(int code);
+    void remove_property(int code);
 
-  bool has_property(int code);
+    bool has_property(int code);
 
 private:
 
-  class Impl;
+    class Impl;
 
-  Ptr<Impl> impl;
+    Ptr<Impl> impl;
 
 };
 #else

@@ -59,54 +59,49 @@ using namespace std;
 
 #include "common/math/geometry.h"
 
-namespace legit
-{
+namespace legit {
 
-namespace common
-{
+    namespace common {
 
 
 
-cv::Rect get_roi(Mat& m);
+        cv::Rect get_roi(Mat& m);
 
-void patch_operation(Mat& target, Mat& patch, cv::Point position, int operation, int origin = ORIGIN_CENTER);
+        void patch_operation(Mat& target, Mat& patch, cv::Point position, int operation, int origin = ORIGIN_CENTER);
 
-void patch_create(Mat& patch, int width, int height, int type, int flags = 0);
+        void patch_create(Mat& patch, int width, int height, int type, int flags = 0);
 
-cv::Rect get_mask_bounds(Mat& mat);
+        cv::Rect get_mask_bounds(Mat& mat);
 
-const string describe_mat_type(int cvtype);
+        const string describe_mat_type(int cvtype);
 
-template <typename T>
-void replace_values(Mat& mat, T find, T replace)
-{
+        template <typename T>
+        void replace_values(Mat& mat, T find, T replace) {
 
-  for (int j = 0; j < mat.rows; j++)
-    {
-      T* src = mat.ptr<T>(j);
-      for (int i = 0; i < mat.cols; i++)
-        if (src[i] == find) src[i] = replace;
+            for (int j = 0; j < mat.rows; j++) {
+                T* src = mat.ptr<T>(j);
+
+                for (int i = 0; i < mat.cols; i++)
+                    if (src[i] == find) { src[i] = replace; }
+            }
+
+        }
+
+        template <typename T>
+        string as_string( const T& t ) {
+            ostringstream os;
+            os << t;
+            return os.str();
+        }
+
+        struct LegitException : public std::exception {
+            std::string s;
+            LegitException(std::string ss);
+            virtual ~LegitException() throw () {}
+            const char* what() const throw();
+        };
+
     }
-
-}
-
-template <typename T>
-string as_string( const T & t )
-{
-  ostringstream os;
-  os << t;
-  return os.str();
-}
-
-struct LegitException : public std::exception
-{
-  std::string s;
-  LegitException(std::string ss);
-  virtual ~LegitException() throw () {}
-  const char* what() const throw();
-};
-
-}
 
 }
 

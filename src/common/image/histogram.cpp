@@ -29,27 +29,23 @@
 
 #include "common/image/histogram.h"
 
-namespace legit
-{
+namespace legit {
 
-namespace common
-{
+    namespace common {
 
-void print_histogram(SimpleHistogram h)
-{
+        void print_histogram(SimpleHistogram h) {
 
-  int32_t* hist = (int32_t*) h.data;
-  printf("Histogram: ");
+            int32_t* hist = (int32_t*) h.data;
+            printf("Histogram: ");
 
-  for (int i = 0; i < h.size; i++)
-    {
-      printf("%d ", hist[i]);
+            for (int i = 0; i < h.size; i++) {
+                printf("%d ", hist[i]);
+            }
+
+            printf("&= %d\n", h.sum);
+        }
+
+
     }
-
-  printf("&= %d\n", h.sum);
-}
-
-
-}
 
 }

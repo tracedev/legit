@@ -30,300 +30,258 @@
 #include "common/image/image.h"
 #include <opencv2/imgproc/imgproc.hpp>
 
-namespace legit
-{
+namespace legit {
 
-namespace common
-{
+    namespace common {
 
-Image::Image() : offset(0, 0), integral_image(NULL), inthist16(NULL), inthist32(NULL)
-{
+        Image::Image() : offset(0, 0), integral_image(NULL), inthist16(NULL), inthist32(NULL) {
 
-  reset();
+            reset();
 
-  update_size();
+            update_size();
 
-}
+        }
 
-Image::Image(int width, int height) : offset(0, 0), integral_image(NULL), inthist16(NULL), inthist32(NULL)
-{
+        Image::Image(int width, int height) : offset(0, 0), integral_image(NULL), inthist16(NULL), inthist32(NULL) {
 
-  reset();
+            reset();
 
-  formats[IMAGE_FORMAT_RGB].create(height, width, CV_8UC3);
-  has_format[IMAGE_FORMAT_RGB] = true;
+            formats[IMAGE_FORMAT_RGB].create(height, width, CV_8UC3);
+            has_format[IMAGE_FORMAT_RGB] = true;
 
-  update_size();
+            update_size();
 
-}
+        }
 
 
 
-Image::Image(Mat& src) : offset(0, 0), integral_image(NULL), inthist16(NULL), inthist32(NULL)
-{
+        Image::Image(Mat& src) : offset(0, 0), integral_image(NULL), inthist16(NULL), inthist32(NULL) {
 
-  update(src);
+            update(src);
 
-}
+        }
 
 // TODO: improve !!!
-Image::Image(Image& image, Rect region) : offset(0, 0), integral_image(NULL), inthist16(NULL), inthist32(NULL)
-{
+        Image::Image(Image& image, Rect region) : offset(0, 0), integral_image(NULL), inthist16(NULL), inthist32(NULL) {
 
-  copy_region(image, region);
-
-}
-
-Image::~Image()
-{
-
-  reset();
-
-}
-
-
-
-void Image::update(Mat& src)
-{
-
-  offset = Point(0, 0);
-
-  if (src.channels() >= 3 )
-    {
-
-      if (src.depth() == CV_8U)
-        {
-
-          update(src, IMAGE_FORMAT_RGB);
+            copy_region(image, region);
 
         }
-      else throw LegitException("Unrecognized source type");
-    }
-  else if (src.channels() == 1 && src.depth() == CV_8U)
-    {
 
-      update(src, IMAGE_FORMAT_GRAY);
+        Image::~Image() {
 
-    }
-  else throw LegitException("Unrecognized source type");
+            reset();
 
-}
-
-void Image::update(Mat& data, int format, bool overwrite)
-{
-
-  if (!overwrite && !empty() && (data.cols != _width || data.rows != _height))
-    throw LegitException("Size of the input matrix does not match the size of the image");
-
-  if (format < 0 || format >= IMAGE_FORMATS)
-    throw LegitException("Unknown image format");
-
-  if (overwrite) reset();
-
-  data.copyTo(formats[format]);
-  has_format[format] = true;
-
-  update_size();
-}
-
-void Image::copy_region(Image& image, cv::Rect region)
-{
-
-  reset();
-
-  Rect roi;
-
-  roi.x = MIN(MAX(region.x, 0), image.width());
-  roi.y = MIN(MAX(region.y, 0), image.height());
-  roi.width = MIN(MAX(region.width + roi.x, 0), image.width()) - roi.x;
-  roi.height = MIN(MAX(region.height + roi.y, 0), image.height()) - roi.y;
-
-  for (int i = 0; i < IMAGE_FORMATS; i++)
-    {
-      if (!image.has_format[i]) continue;
-
-      formats[i] = image.formats[i](roi);
-      has_format[i] = true;
-    }
-
-  offset = roi.tl();
-
-  update_size();
-}
-
-Mat Image::get_rgb()
-{
-
-  return get(IMAGE_FORMAT_RGB);
-
-}
-
-Mat Image::get_gray()
-{
-
-  return get(IMAGE_FORMAT_GRAY);
-
-}
-
-Mat Image::get_hsv()
-{
-
-  return get(IMAGE_FORMAT_HSV);
-
-}
-
-Mat Image::get(int format)
-{
-
-  if (format < 0 || format >= IMAGE_FORMATS)
-    throw LegitException("Unknown image format");
-
-  if (has_format[format])
-    return formats[format];
-
-  switch (format)
-    {
-    case IMAGE_FORMAT_GRAY:
-    {
-      Mat tmp_rgb = this->get(IMAGE_FORMAT_RGB);
-      cvtColor(tmp_rgb, formats[IMAGE_FORMAT_GRAY], COLOR_RGB2GRAY);
-      has_format[IMAGE_FORMAT_GRAY] = true;
-      // TODO: do this smart for YCrCb ... just use Y
-      break;
-    }
-    case IMAGE_FORMAT_RGB:
-    {
-      if (has_format[IMAGE_FORMAT_HSV])
-        {
-          cvtColor(formats[IMAGE_FORMAT_HSV], formats[IMAGE_FORMAT_RGB], COLOR_HSV2RGB);
-          has_format[IMAGE_FORMAT_RGB] = true;
         }
-      else if (has_format[IMAGE_FORMAT_YCRCB])
-        {
-          cvtColor(formats[IMAGE_FORMAT_YCRCB], formats[IMAGE_FORMAT_RGB], COLOR_YCrCb2RGB);
-          has_format[IMAGE_FORMAT_RGB] = true;
+
+        void Image::update(Mat& src) {
+            offset = Point(0, 0);
+
+            if (src.channels() >= 3 ) {
+                if (src.channels() == 3 ) {
+
+                    if (src.depth() == CV_8U) {
+
+                        update(src, IMAGE_FORMAT_RGB);
+
+                    } else { throw LegitException("Unrecognized source type"); }
+                } else if (src.channels() == 1 && src.depth() == CV_8U) {
+
+                    update(src, IMAGE_FORMAT_GRAY);
+
+                } else { throw LegitException("Unrecognized source type"); }
+
+            }
+
+            void Image::update(Mat & data, int format, bool overwrite) {
+
+                if (!overwrite && !empty() && (data.cols != _width || data.rows != _height))
+                { throw LegitException("Size of the input matrix does not match the size of the image"); }
+
+                if (format < 0 || format >= IMAGE_FORMATS)
+                { throw LegitException("Unknown image format"); }
+
+                if (overwrite) { reset(); }
+
+                data.copyTo(formats[format]);
+                has_format[format] = true;
+
+                update_size();
+            }
+
+            void Image::copy_region(Image & image, cv::Rect region) {
+
+                reset();
+
+                Rect roi;
+
+                roi.x = MIN(MAX(region.x, 0), image.width());
+                roi.y = MIN(MAX(region.y, 0), image.height());
+                roi.width = MIN(MAX(region.width + roi.x, 0), image.width()) - roi.x;
+                roi.height = MIN(MAX(region.height + roi.y, 0), image.height()) - roi.y;
+
+                for (int i = 0; i < IMAGE_FORMATS; i++) {
+                    if (!image.has_format[i]) { continue; }
+
+                    formats[i] = image.formats[i](roi);
+                    has_format[i] = true;
+                }
+
+                offset = roi.tl();
+
+                update_size();
+            }
+
+            Mat Image::get_rgb() {
+
+                return get(IMAGE_FORMAT_RGB);
+
+            }
+
+            Mat Image::get_gray() {
+
+                return get(IMAGE_FORMAT_GRAY);
+
+            }
+
+            Mat Image::get_hsv() {
+
+                return get(IMAGE_FORMAT_HSV);
+
+            }
+
+            Mat Image::get(int format) {
+
+                if (format < 0 || format >= IMAGE_FORMATS)
+                { throw LegitException("Unknown image format"); }
+
+                if (has_format[format])
+                { return formats[format]; }
+
+                switch (format) {
+                    case IMAGE_FORMAT_GRAY: {
+                        Mat tmp_rgb = this->get(IMAGE_FORMAT_RGB);
+                        cvtColor(tmp_rgb, formats[IMAGE_FORMAT_GRAY], COLOR_RGB2GRAY);
+                        has_format[IMAGE_FORMAT_GRAY] = true;
+                        // TODO: do this smart for YCrCb ... just use Y
+                        break;
+                    }
+
+                    case IMAGE_FORMAT_RGB: {
+                        if (has_format[IMAGE_FORMAT_HSV]) {
+                            cvtColor(formats[IMAGE_FORMAT_HSV], formats[IMAGE_FORMAT_RGB], COLOR_HSV2RGB);
+                            has_format[IMAGE_FORMAT_RGB] = true;
+                        } else if (has_format[IMAGE_FORMAT_YCRCB]) {
+                            cvtColor(formats[IMAGE_FORMAT_YCRCB], formats[IMAGE_FORMAT_RGB], COLOR_YCrCb2RGB);
+                            has_format[IMAGE_FORMAT_RGB] = true;
+                        } else if (has_format[IMAGE_FORMAT_GRAY]) {
+                            cvtColor(formats[IMAGE_FORMAT_GRAY], formats[IMAGE_FORMAT_RGB], COLOR_GRAY2RGB);
+                            has_format[IMAGE_FORMAT_RGB] = true;
+                        } else { throw LegitException("Unable to return RGB image"); }
+
+                        break;
+                    }
+
+                    case IMAGE_FORMAT_HSV: {
+                        Mat tmp_rgb = get(IMAGE_FORMAT_RGB);
+                        cvtColor(tmp_rgb, formats[IMAGE_FORMAT_HSV], COLOR_RGB2HSV);
+                        has_format[IMAGE_FORMAT_HSV] = true;
+                        break;
+                    }
+
+                    case IMAGE_FORMAT_YCRCB: {
+                        Mat tmp_rgb = get(IMAGE_FORMAT_RGB);
+                        cvtColor(tmp_rgb, formats[IMAGE_FORMAT_YCRCB], COLOR_RGB2YCrCb);
+                        has_format[IMAGE_FORMAT_YCRCB] = true;
+                        break;
+                    }
+                }
+
+                return formats[format];
+
+            }
+
+            Point2i Image::get_offset() {
+                return offset;
+            }
+
+            Rect Image::get_roi() {
+
+                for (int i = 0; i < IMAGE_FORMATS; i++) {
+                    if (!has_format[i]) { continue; }
+
+                    return legit::common::get_roi(formats[i]);
+                }
+
+                throw LegitException("Empty image");
+            }
+
+            void Image::update_size() {
+
+                _width = 0;
+                _height = 0;
+
+                for (int i = 0; i < IMAGE_FORMATS; i++) {
+                    if (!has_format[i]) { continue; }
+
+                    _width = formats[i].cols;
+                    _height = formats[i].rows;
+                    break;
+                }
+
+            }
+
+            void Image::reset() {
+
+                if (has_integral_image && integral_image) {
+                    delete integral_image;
+                    integral_image = NULL;
+                }
+
+                if (has_inthist16 && inthist16) {
+                    delete inthist16;
+                    inthist16 = NULL;
+                }
+
+                if (has_inthist32 && inthist32) {
+                    delete inthist32;
+                    inthist32 = NULL;
+                }
+
+                for (int i = 0; i < IMAGE_FORMATS; i++)
+                { has_format[i] = false; }
+
+                has_inthist16 = false;
+                has_inthist32 = false;
+                has_integral_image = false;
+                has_mask = false;
+                has_float_mask = false;
+
+            }
+
+            Mat Image::get_mask() {
+
+                if (!has_mask) {
+                    mask.create(height(), width(), CV_8U);
+                    has_mask = true;
+                }
+
+                return mask;
+
+            }
+
+
+            Mat Image::get_float_mask() {
+
+                if (!has_float_mask) {
+                    float_mask.create(height(), width(), CV_32F);
+                    has_float_mask = true;
+                }
+
+                return float_mask;
+
+            }
+
         }
-      else if (has_format[IMAGE_FORMAT_GRAY])
-        {
-          cvtColor(formats[IMAGE_FORMAT_GRAY], formats[IMAGE_FORMAT_RGB], COLOR_GRAY2RGB);
-          has_format[IMAGE_FORMAT_RGB] = true;
-        }
-      else throw LegitException("Unable to return RGB image");
-      break;
+
     }
-    case IMAGE_FORMAT_HSV:
-    {
-      Mat tmp_rgb = get(IMAGE_FORMAT_RGB);
-      cvtColor(tmp_rgb, formats[IMAGE_FORMAT_HSV], COLOR_RGB2HSV);
-      has_format[IMAGE_FORMAT_HSV] = true;
-      break;
-    }
-    case IMAGE_FORMAT_YCRCB:
-    {
-      Mat tmp_rgb = get(IMAGE_FORMAT_RGB);
-      cvtColor(tmp_rgb, formats[IMAGE_FORMAT_YCRCB], COLOR_RGB2YCrCb);
-      has_format[IMAGE_FORMAT_YCRCB] = true;
-      break;
-    }
-    }
-
-  return formats[format];
-
-}
-
-Point2i Image::get_offset()
-{
-  return offset;
-}
-
-Rect Image::get_roi()
-{
-
-  for (int i = 0; i < IMAGE_FORMATS; i++)
-    {
-      if (!has_format[i]) continue;
-      return legit::common::get_roi(formats[i]);
-    }
-
-  throw LegitException("Empty image");
-}
-
-void Image::update_size()
-{
-
-  _width = 0;
-  _height = 0;
-
-  for (int i = 0; i < IMAGE_FORMATS; i++)
-    {
-      if (!has_format[i]) continue;
-
-      _width = formats[i].cols;
-      _height = formats[i].rows;
-      break;
-    }
-
-}
-
-void Image::reset()
-{
-
-  if (has_integral_image && integral_image)
-    {
-      delete integral_image;
-      integral_image = NULL;
-    }
-
-  if (has_inthist16 && inthist16)
-    {
-      delete inthist16;
-      inthist16 = NULL;
-    }
-
-  if (has_inthist32 && inthist32)
-    {
-      delete inthist32;
-      inthist32 = NULL;
-    }
-
-  for (int i = 0; i < IMAGE_FORMATS; i++)
-    has_format[i] = false;
-
-  has_inthist16 = false;
-  has_inthist32 = false;
-  has_integral_image = false;
-  has_mask = false;
-  has_float_mask = false;
-
-}
-
-Mat Image::get_mask()
-{
-
-  if (!has_mask)
-    {
-      mask.create(height(), width(), CV_8U);
-      has_mask = true;
-    }
-
-  return mask;
-
-}
-
-
-Mat Image::get_float_mask()
-{
-
-  if (!has_float_mask)
-    {
-      float_mask.create(height(), width(), CV_32F);
-      has_float_mask = true;
-    }
-
-  return float_mask;
-
-}
-
-}
-
-}

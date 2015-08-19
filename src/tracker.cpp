@@ -38,219 +38,197 @@
 #include BUILTIN_CONFIG
 #endif
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
-/*
-vector<legit::tracker::TrackerFactory*> tracker_registry;
+    namespace tracker {
+        /*
+        vector<legit::tracker::TrackerFactory*> tracker_registry;
 
-void register_tracker(TrackerFactory* factory) {
+        void register_tracker(TrackerFactory* factory) {
 
-    if (factory)
-        tracker_registry.push_back(factory);
+            if (factory)
+                tracker_registry.push_back(factory);
 
-}*/
+        }*/
 
-Tracker* create_tracker(string type, Config& config, string id)
-{
+        Tracker* create_tracker(string type, Config& config, string id) {
 
-  /*if (!config.keyExists("tracker"))
-      throw LegitException("Unknown tracker type");
-  */
-  Tracker* ptr = NULL;
-  //string type = config.read<string>("tracker");
+            /*if (!config.keyExists("tracker"))
+                throw LegitException("Unknown tracker type");
+            */
+            Tracker* ptr = NULL;
+            //string type = config.read<string>("tracker");
 
-  TrackerRegistry& reg = getTrackerRegistry();
-  TrackerRegistry::iterator it = reg.find(type);
+            TrackerRegistry& reg = getTrackerRegistry();
+            TrackerRegistry::iterator it = reg.find(type);
 
 
 
-  if (it != reg.end())
-    {
-      CreateTrackerFunc func = it->second;
-      ptr = func(config, id);
-    }
+            if (it != reg.end()) {
+                CreateTrackerFunc func = it->second;
+                ptr = func(config, id);
+            }
 
-  if (!ptr)
-    throw LegitException("Unknown tracker type");
-
-
-
-  return ptr;
-  /*
-      if (config.read<bool>("tracker.focus", false)) {
-          int fwidth = MAX(10, config.read<int>("tracker.focus.width", 150));
-          int fheight = MAX(10, config.read<int>("tracker.focus.height", 150));
+            if (!ptr)
+            { throw LegitException("Unknown tracker type"); }
 
 
 
-          return new ProxyTracker(ptr, Size(fwidth, fheight));
-      } else {
-          return ptr;
-      }
-  */
-}
+            return ptr;
+            /*
+                if (config.read<bool>("tracker.focus", false)) {
+                    int fwidth = MAX(10, config.read<int>("tracker.focus.width", 150));
+                    int fheight = MAX(10, config.read<int>("tracker.focus.height", 150));
 
-vector<string> list_builtin_configs()
-{
 
-  vector<string> list;
 
-#ifdef BUILTIN_CONFIG
-
-  int i = 0;
-  while (!_legit_builtin_config[i].empty())
-    {
-      // string name(_legit_defaul_config[i]);
-      list.push_back(_legit_builtin_config[i]);
-      i += 2;
-    }
-
-#endif
-
-  return list;
-}
-
-vector<string> list_registered_trackers()
-{
-
-  vector<string> list;
-
-  TrackerRegistry& reg = getTrackerRegistry();
-
-  for (TrackerRegistry::iterator it = reg.begin(); it != reg.end(); ++it)
-    list.push_back(it->first);
-
-  return list;
-}
-
-void read_builtin_config(string name, Config& config)
-{
-
-#ifdef BUILTIN_CONFIG
-
-  int i = 0;
-  while (!_legit_builtin_config[i].empty())
-    {
-      if (_legit_builtin_config[i] == name)
-        {
-          istringstream defaultConfig(_legit_builtin_config[i+1]);
-          defaultConfig >> config;
-          break;
+                    return new ProxyTracker(ptr, Size(fwidth, fheight));
+                } else {
+                    return ptr;
+                }
+            */
         }
-      i += 2;
-    }
+
+        vector<string> list_builtin_configs() {
+
+            vector<string> list;
+
+#ifdef BUILTIN_CONFIG
+
+            int i = 0;
+
+            while (!_legit_builtin_config[i].empty()) {
+                // string name(_legit_defaul_config[i]);
+                list.push_back(_legit_builtin_config[i]);
+                i += 2;
+            }
 
 #endif
 
-}
+            return list;
+        }
 
-void Tracker::set_property(int code, float value)
-{
+        vector<string> list_registered_trackers() {
 
-  properties[code] = value;
+            vector<string> list;
 
-}
+            TrackerRegistry& reg = getTrackerRegistry();
 
-float Tracker::get_property(int code)
-{
+            for (TrackerRegistry::iterator it = reg.begin(); it != reg.end(); ++it)
+            { list.push_back(it->first); }
 
-  map<int, float>::iterator it = properties.find(code);
+            return list;
+        }
 
-  if (it == properties.end())
-    throw LegitException("Property not available");
+        void read_builtin_config(string name, Config& config) {
 
-  return it->second;
+#ifdef BUILTIN_CONFIG
 
-}
+            int i = 0;
 
-void Tracker::remove_property(int code)
-{
+            while (!_legit_builtin_config[i].empty()) {
+                if (_legit_builtin_config[i] == name) {
+                    istringstream defaultConfig(_legit_builtin_config[i + 1]);
+                    defaultConfig >> config;
+                    break;
+                }
 
-  properties.erase(code);
+                i += 2;
+            }
 
-}
+#endif
 
-bool Tracker::has_property(int code)
-{
+        }
 
-  map<int, float>::iterator it = properties.find(code);
+        void Tracker::set_property(int code, float value) {
 
-  return (it != properties.end());
+            properties[code] = value;
 
-}
+        }
 
-void ProxyTracker::initialize(Image& image, cv::Rect region)
-{
+        float Tracker::get_property(int code) {
 
-  tracker->initialize(image, region);
-}
+            map<int, float>::iterator it = properties.find(code);
 
-void ProxyTracker::update(Image& image)
-{
+            if (it == properties.end())
+            { throw LegitException("Property not available"); }
 
-  tracker->update(image);
+            return it->second;
 
-}
+        }
 
-cv::Rect ProxyTracker::region()
-{
-  return tracker->region();
-}
+        void Tracker::remove_property(int code) {
 
-Point2f ProxyTracker::position()
-{
-  return tracker->position();
-}
+            properties.erase(code);
 
-bool ProxyTracker::is_tracking()
-{
-  return tracker->is_tracking();
-}
+        }
 
-void ProxyTracker::visualize(Canvas& canvas)
-{
+        bool Tracker::has_property(int code) {
 
-  tracker->visualize(canvas);
-}
+            map<int, float>::iterator it = properties.find(code);
+
+            return (it != properties.end());
+
+        }
+
+        void ProxyTracker::initialize(Image& image, cv::Rect region) {
+
+            tracker->initialize(image, region);
+        }
+
+        void ProxyTracker::update(Image& image) {
+
+            tracker->update(image);
+
+        }
+
+        cv::Rect ProxyTracker::region() {
+            return tracker->region();
+        }
+
+        Point2f ProxyTracker::position() {
+            return tracker->position();
+        }
+
+        bool ProxyTracker::is_tracking() {
+            return tracker->is_tracking();
+        }
+
+        void ProxyTracker::visualize(Canvas& canvas) {
+
+            tracker->visualize(canvas);
+        }
 
 
 
-string ProxyTracker::get_name()
-{
-  return tracker->get_name();
-}
+        string ProxyTracker::get_name() {
+            return tracker->get_name();
+        }
 
-void ProxyTracker::set_property(int code, float value)
-{
+        void ProxyTracker::set_property(int code, float value) {
 
-  tracker->set_property(code, value);
+            tracker->set_property(code, value);
 
-}
+        }
 
-float ProxyTracker::get_property(int code)
-{
+        float ProxyTracker::get_property(int code) {
 
-  return tracker->get_property(code);
+            return tracker->get_property(code);
 
-}
+        }
 
-void ProxyTracker::remove_property(int code)
-{
+        void ProxyTracker::remove_property(int code) {
 
-  tracker->remove_property(code);
+            tracker->remove_property(code);
 
-}
+        }
 
-bool ProxyTracker::has_property(int code)
-{
+        bool ProxyTracker::has_property(int code) {
 
-  return tracker->has_property(code);
+            return tracker->has_property(code);
 
-}
+        }
 
-}
+    }
 
 }

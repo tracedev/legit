@@ -30,17 +30,15 @@
 #ifndef LEGIT_TRACKER
 #define LEGIT_TRACKER
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
+    namespace tracker {
 
-class Tracker;
+        class Tracker;
 
-class TrackerFactory;
+        class TrackerFactory;
 
-}
+    }
 
 }
 
@@ -54,160 +52,150 @@ using namespace cv;
 using namespace std;
 using namespace legit::common;
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
+    namespace tracker {
 
-class Tracker
-{
+        class Tracker {
 
-public:
+        public:
 
-  virtual void initialize(Image& image, cv::Rect region) = 0;
+            virtual void initialize(Image& image, cv::Rect region) = 0;
 
-  virtual void update(Image& image) = 0;
+            virtual void update(Image& image) = 0;
 
-  virtual cv::Rect region() = 0;
+            virtual cv::Rect region() = 0;
 
-  virtual Point2f position() = 0;
+            virtual Point2f position() = 0;
 
-  virtual bool is_tracking() = 0;
+            virtual bool is_tracking() = 0;
 
-  virtual void visualize(Canvas& canvas) = 0;
+            virtual void visualize(Canvas& canvas) = 0;
 
-  virtual string get_name() = 0;
+            virtual string get_name() = 0;
 
-  virtual void set_property(int code, float value);
+            virtual void set_property(int code, float value);
 
-  virtual float get_property(int code);
+            virtual float get_property(int code);
 
-  virtual void remove_property(int code);
+            virtual void remove_property(int code);
 
-  virtual bool has_property(int code);
+            virtual bool has_property(int code);
 
-private:
+        private:
 
-  map<int, float> properties;
+            map<int, float> properties;
 
-};
+        };
 
-class ProxyTracker : public Tracker
-{
+        class ProxyTracker : public Tracker {
 
-public:
+        public:
 
-  virtual void initialize(Image& image, cv::Rect region);
+            virtual void initialize(Image& image, cv::Rect region);
 
-  virtual void update(Image& image);
+            virtual void update(Image& image);
 
-  virtual cv::Rect region();
+            virtual cv::Rect region();
 
-  virtual Point2f position();
+            virtual Point2f position();
 
-  virtual bool is_tracking();
+            virtual bool is_tracking();
 
-  virtual void visualize(Canvas& canvas);
+            virtual void visualize(Canvas& canvas);
 
-  virtual string get_name();
+            virtual string get_name();
 
-  virtual void set_property(int code, float value);
+            virtual void set_property(int code, float value);
 
-  virtual float get_property(int code);
+            virtual float get_property(int code);
 
-  virtual void remove_property(int code);
+            virtual void remove_property(int code);
 
-  virtual bool has_property(int code);
+            virtual bool has_property(int code);
 
-protected:
+        protected:
 
-  Ptr<Tracker> tracker;
+            Ptr<Tracker> tracker;
 
-};
+        };
 
-typedef Tracker* (*CreateTrackerFunc)(Config& config, string id);
-typedef std::map<std::string, CreateTrackerFunc> TrackerRegistry;
+        typedef Tracker* (*CreateTrackerFunc)(Config& config, string id);
+        typedef std::map<std::string, CreateTrackerFunc> TrackerRegistry;
 
-inline TrackerRegistry& getTrackerRegistry()
-{
-  static TrackerRegistry reg;
-  return reg;
-}
+        inline TrackerRegistry& getTrackerRegistry() {
+            static TrackerRegistry reg;
+            return reg;
+        }
 
-template<class T>
-Tracker* createTracker(Config& config, string id)
-{
-  return new T(config, id);
-}
+        template<class T>
+        Tracker* createTracker(Config& config, string id) {
+            return new T(config, id);
+        }
 
-template<class T>
-struct RegistryEntry
-{
-public:
-  static RegistryEntry<T>& Instance(const std::string& name)
-  {
-    // Because I use a singleton here, even though `REGISTER_TRACKER`
-    // is expanded in multiple translation units, the constructor
-    // will only be executed once. Only this cheap `Instance` function
-    // (which most likely gets inlined) is executed multiple times.
+        template<class T>
+        struct RegistryEntry {
+        public:
+            static RegistryEntry<T>& Instance(const std::string& name) {
+                // Because I use a singleton here, even though `REGISTER_TRACKER`
+                // is expanded in multiple translation units, the constructor
+                // will only be executed once. Only this cheap `Instance` function
+                // (which most likely gets inlined) is executed multiple times.
 
-    static RegistryEntry<T> inst(name);
-    return inst;
-  }
+                static RegistryEntry<T> inst(name);
+                return inst;
+            }
 
-private:
-  RegistryEntry(const std::string& name)
-  {
-    TrackerRegistry& reg = getTrackerRegistry();
-    CreateTrackerFunc func = createTracker<T>;
+        private:
+            RegistryEntry(const std::string& name) {
+                TrackerRegistry& reg = getTrackerRegistry();
+                CreateTrackerFunc func = createTracker<T>;
 
 
 
-    std::pair<TrackerRegistry::iterator, bool> ret =
-      reg.insert(TrackerRegistry::value_type(name, func));
+                std::pair<TrackerRegistry::iterator, bool> ret =
+                    reg.insert(TrackerRegistry::value_type(name, func));
 
-    if (ret.second == false)
-      {
-        // This means there already is a tracker registered to this name.
-        throw LegitException("Tracker already registered for this name");
-      }
-  }
+                if (ret.second == false) {
+                    // This means there already is a tracker registered to this name.
+                    throw LegitException("Tracker already registered for this name");
+                }
+            }
 
-  RegistryEntry(const RegistryEntry<T>&) = delete; // C++11 feature
-  RegistryEntry& operator=(const RegistryEntry<T>&) = delete;
-};
+            RegistryEntry(const RegistryEntry<T>&) = delete; // C++11 feature
+            RegistryEntry& operator=(const RegistryEntry<T>&) = delete;
+        };
 
-Tracker* create_tracker(string type, Config& config, string id);
+        Tracker* create_tracker(string type, Config& config, string id);
 
-vector<string> list_builtin_configs();
+        vector<string> list_builtin_configs();
 
-vector<string> list_registered_trackers();
+        vector<string> list_registered_trackers();
 
-void read_builtin_config(string name, Config& config);
+        void read_builtin_config(string name, Config& config);
 
-}
+    }
 
 }
 
 #define REGISTER_TRACKER(TYPE, NAME)                                          \
     namespace legit {                                                         \
-    namespace tracker {                                                       \
-    namespace                                                                 \
-    {                                                                         \
-        template<class T>                                                     \
-        class TrackerRegistration;                                            \
-                                                                              \
-        template<>                                                            \
-        class TrackerRegistration<TYPE>                                       \
-        {                                                                     \
-            static const ::legit::tracker::RegistryEntry<TYPE>& reg;          \
-        };                                                                    \
-                                                                              \
-        const ::legit::tracker::RegistryEntry<TYPE>&                          \
-            TrackerRegistration<TYPE>::reg =                                  \
-                ::legit::tracker::RegistryEntry<TYPE>::Instance(NAME);        \
-    }}}
+        namespace tracker {                                                       \
+            namespace                                                                 \
+            {                                                                         \
+                template<class T>                                                     \
+                class TrackerRegistration;                                            \
+                \
+                template<>                                                            \
+                class TrackerRegistration<TYPE>                                       \
+                {                                                                     \
+                    static const ::legit::tracker::RegistryEntry<TYPE>& reg;          \
+                };                                                                    \
+                \
+                const ::legit::tracker::RegistryEntry<TYPE>&                          \
+                TrackerRegistration<TYPE>::reg =                                  \
+                        ::legit::tracker::RegistryEntry<TYPE>::Instance(NAME);        \
+            }}}
 
 #define MAKE_TITLE(I, T) ("[" + inst + "] " + T)
 

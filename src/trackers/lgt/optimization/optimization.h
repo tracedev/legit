@@ -36,138 +36,127 @@
 
 #define OPTIMIZATION_VISUAL_DEBUG 10
 
-namespace legit
-{
+namespace legit {
 
-namespace tracker
-{
+    namespace tracker {
 
-typedef struct
-{
-  cv::Size min_size;
-  cv::Size max_size;
-} SizeConstraints;
+        typedef struct {
+            cv::Size min_size;
+            cv::Size max_size;
+        } SizeConstraints;
 
-typedef struct
-{
-  int id;
-  Point2f position;
-  int iterations;
-  float value;
-  int flags;
-} PatchStatus;
+        typedef struct {
+            int id;
+            Point2f position;
+            int iterations;
+            float value;
+            int flags;
+        } PatchStatus;
 
-class OptimizationStatus
-{
-public:
-  OptimizationStatus(PatchSet& patches);
-  ~OptimizationStatus();
+        class OptimizationStatus {
+        public:
+            OptimizationStatus(PatchSet& patches);
+            ~OptimizationStatus();
 
-  void reset();
-  void set(int i, Point2f position, float value = -1, int iterations = -1, int flags = -1);
-  void converged(int i, int iterations);
-  void value(int i, float val);
+            void reset();
+            void set(int i, Point2f position, float value = -1, int iterations = -1, int flags = -1);
+            void converged(int i, int iterations);
+            void value(int i, float val);
 
-  PatchStatus get(int i);
-  Point2f get_position(int i);
+            PatchStatus get(int i);
+            Point2f get_position(int i);
 
-  void toggle_flags(int i, int mask);
-  void set_flags(int i, int mask);
-  void unset_flags(int i, int mask);
+            void toggle_flags(int i, int mask);
+            void set_flags(int i, int mask);
+            void unset_flags(int i, int mask);
 
-  int size();
+            int size();
 
-  void print();
+            void print();
 
-private:
+        private:
 
-  int dimension;
-  PatchStatus* statuses;
+            int dimension;
+            PatchStatus* statuses;
 
-};
+        };
 
 #define OPTIMIZATION_DEBUG_CANDIDATE 0
 #define OPTIMIZATION_DEBUG_CONSENSUS 1
 #define OPTIMIZATION_DEBUG_CONVERGED 2
-/*
-class OptimizationDebug {
-public:
-    OptimizationDebug();
-    ~OptimizationDebug();
+        /*
+        class OptimizationDebug {
+        public:
+            OptimizationDebug();
+            ~OptimizationDebug();
 
-    void add_position(int i, int type, Point2f p) = 0;
+            void add_position(int i, int type, Point2f p) = 0;
 
-    void add_covariance(int i, Matrix2f cov) = 0;
+            void add_covariance(int i, Matrix2f cov) = 0;
 
-    void new_iteration() = 0;
-}
-*/
-class ResponseFunction
-{
-public:
+            void new_iteration() = 0;
+        }
+        */
+        class ResponseFunction {
+        public:
 
-  virtual float response(int i, Point2f position) = 0;
+            virtual float response(int i, Point2f position) = 0;
 
-  virtual float normalization() = 0;
+            virtual float normalization() = 0;
 
-};
+        };
 
-class Constraints
-{
-public:
+        class Constraints {
+        public:
 
-  Constraints() {};
+            Constraints() {};
 
-  virtual float constraint(int i, int j) = 0;
+            virtual float constraint(int i, int j) = 0;
 
-};
+        };
 
-class FlatConstraints : public Constraints
-{
-public:
+        class FlatConstraints : public Constraints {
+        public:
 
-  FlatConstraints() {};
+            FlatConstraints() {};
 
-  virtual float constraint(int i, int j)
-  {
-    return i != j ? 1 : 0;
-  };
+            virtual float constraint(int i, int j) {
+                return i != j ? 1 : 0;
+            };
 
-};
+        };
 
-class DelaunayConstraints : public Constraints
-{
-public:
+        class DelaunayConstraints : public Constraints {
+        public:
 
-  DelaunayConstraints(PatchSet& patches);
+            DelaunayConstraints(PatchSet& patches);
 
-  virtual float constraint(int i, int j);
+            virtual float constraint(int i, int j);
 
-private:
+        private:
 
-  Matrix C;
+            Matrix C;
 
-};
+        };
 
-class ProximityConstraints : public Constraints
-{
-public:
+        class ProximityConstraints : public Constraints {
+        public:
 
-  ProximityConstraints(PatchSet& patches, float factor, float threshold);
+            ProximityConstraints(PatchSet& patches, float factor, float threshold);
 
-  virtual float constraint(int i, int j);
+            virtual float constraint(int i, int j);
 
-private:
+        private:
 
-  Matrix D;
+            Matrix D;
 
-  float factor;
+            float factor;
 
-  float threshold;
+            float threshold;
 
-};
+        };
 
-}
+    }
 
 }
 
