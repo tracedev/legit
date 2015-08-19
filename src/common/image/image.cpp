@@ -88,7 +88,7 @@ void Image::update(Mat& src)
 
   offset = Point(0, 0);
 
-  if (src.channels() == 3 )
+  if (src.channels() >= 3 )
     {
 
       if (src.depth() == CV_8U)
