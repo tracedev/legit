@@ -153,7 +153,12 @@ namespace legit {
 
         void LGTTracker::initialize(Image& image, Mat points) {
 
-            patches.flush();
+            //patches.flush();
+            int psize = patches.size();
+            for(int i = 0;i < psize;i++ ){
+              patches.remove(0);
+            }
+
 
             for (int i = 0; i < points.rows; i++) {
                 patches.add(image, patch_type, Point2f(points.at<float>(i, 0), points.at<float>(i, 1)), points.at<float>(i, 2));
