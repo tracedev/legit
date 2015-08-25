@@ -169,6 +169,11 @@ string LegitTracker::get_name() {
 
 }
 
+int LegitTracker::patch_num() {
+
+    return impl->tracker->patch_num();
+
+}
 
 void LegitTracker::set_property(int code, float value) {
 

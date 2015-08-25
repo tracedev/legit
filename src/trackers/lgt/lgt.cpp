@@ -260,6 +260,10 @@ namespace legit {
 
         }
 
+        int LGTTracker::patch_num(){
+          return patches.size();
+        }
+
         void LGTTracker::track(Image& image, bool announce, bool push) {
 
 

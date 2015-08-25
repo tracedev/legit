@@ -72,6 +72,8 @@ namespace legit {
 
             virtual void visualize(Canvas& canvas) = 0;
 
+            virtual int patch_num()  = 0;
+
             virtual string get_name() = 0;
 
             virtual void set_property(int code, float value);

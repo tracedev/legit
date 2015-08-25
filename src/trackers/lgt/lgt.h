@@ -72,6 +72,7 @@ namespace legit {
 
             virtual void visualize(Canvas& canvas);
 
+            virtual int patch_num();
 
             virtual string get_name();
 

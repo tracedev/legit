@@ -78,6 +78,9 @@ public:
 
     bool has_property(int code);
 
+    int patch_num();
+
+
 private:
 
     class Impl;
