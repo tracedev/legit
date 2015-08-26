@@ -34,7 +34,7 @@ namespace legit {
         class ModalityColor3DHistogram : public Modality {
 
         public:
-            ModalityColor3DHistogram(Config& config, string configbase);
+            ModalityColor3DHistogram(string configbase);
             ~ModalityColor3DHistogram();
 
             virtual void flush();

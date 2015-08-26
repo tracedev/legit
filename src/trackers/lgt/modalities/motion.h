@@ -35,7 +35,7 @@ namespace legit {
         class ModalityMotionLK : public Modality {
 
         public:
-            ModalityMotionLK(Config& config, string configbase);
+            ModalityMotionLK(string configbase);
             ~ModalityMotionLK();
 
             virtual void flush();

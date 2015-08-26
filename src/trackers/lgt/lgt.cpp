@@ -35,9 +35,9 @@ namespace legit {
             return (c < 0) ? -1 : (c > 0) ? 1 : 0;
         }
 
-        LGTTracker::LGTTracker(Config& config, string inst) :
+        LGTTracker::LGTTracker(string inst) :
             patches(6, 30),
-            modalities(config),
+            modalities(),
             verbosity(0),
             probability_size(150),
             global_optimization(50, 300, 10, 10, 10, 0.001),

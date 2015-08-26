@@ -37,7 +37,7 @@ namespace legit {
 
 
 
-        ModalityMotionLK::ModalityMotionLK(Config& config, string configbase) : Modality(config, configbase), step(2), history(step, step), motion(step, step) {
+        ModalityMotionLK::ModalityMotionLK(string configbase) : Modality(configbase), step(2), history(step, step), motion(step, step) {
 
             block_size = 7;
             aperture_size = 7;

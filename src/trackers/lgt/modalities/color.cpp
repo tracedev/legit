@@ -61,7 +61,7 @@ namespace legit {
 
 
         */
-        ModalityColor3DHistogram::ModalityColor3DHistogram(Config& config, string configbase) : Modality(config, configbase), has_data(false) {
+        ModalityColor3DHistogram::ModalityColor3DHistogram(string configbase) : Modality(configbase), has_data(false) {
 
             channels[0] = 0;
             channels[1] = 1;

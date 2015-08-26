@@ -55,7 +55,7 @@ namespace legit {
 
         public:
 
-            LGTTracker(Config& config, string instance = "default");
+            LGTTracker(string instance = "default");
             ~LGTTracker();
 
             virtual void initialize(Image& image, cv::Rect region);

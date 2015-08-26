@@ -32,7 +32,7 @@ namespace legit {
         *
         *********************************************************************************/
 
-        ModalityConvex::ModalityConvex(Config& config, string configbase) : Modality(config, configbase) {
+        ModalityConvex::ModalityConvex(string configbase) : Modality(configbase) {
             margin = 10;
             margin_diminish = CLAMP3(0.3f, 0, 0.9999f);
             persistence = CLAMP3(0.7f, 0, 0.9999f);
@@ -139,8 +139,8 @@ namespace legit {
         *********************************************************************************/
 
 
-        ModalityBounding::ModalityBounding(Config& config, string configbase) : Modality(config, configbase) {
-            margin = config.read<int>(configbase + ".expand", 0);
+        ModalityBounding::ModalityBounding(string configbase) : Modality(configbase) {
+            margin =  0;
             bounds.width = -1;
             flush();
         }

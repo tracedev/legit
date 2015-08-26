@@ -50,7 +50,7 @@ namespace legit {
 
         class Modality {
         public:
-            Modality(Config& config, string configbase);
+            Modality(string configbase);
 
             virtual void flush() = 0;
 
@@ -73,7 +73,7 @@ namespace legit {
 
         public:
 
-            Modalities(Config& config);
+            Modalities();
             ~Modalities();
 
             void flush();

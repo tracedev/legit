@@ -32,16 +32,16 @@ namespace legit {
 
     namespace tracker {
 
-        Modalities::Modalities(Config& config) {
+        Modalities::Modalities() {
 
 
-            modalities.push_back(Ptr<Modality>(new ModalityColor3DHistogram(config, "")));
+            modalities.push_back(Ptr<Modality>(new ModalityColor3DHistogram("")));
 
 
-            modalities.push_back(Ptr<Modality>(new ModalityConvex(config, "cuename")));
+            modalities.push_back(Ptr<Modality>(new ModalityConvex("cuename")));
 
 
-            modalities.push_back(Ptr<Modality>(new ModalityMotionLK(config, "cuename")));
+            modalities.push_back(Ptr<Modality>(new ModalityMotionLK("cuename")));
 
 
             //  modalities.push_back(Ptr<Modality>(new ModalityBounding(config, cuename)));
@@ -143,7 +143,7 @@ namespace legit {
         }
 
 
-        Modality::Modality(Config& config, string configbase) {
+        Modality::Modality(string configbase) {
 
             double weight = 0.5;
             int age = 0;

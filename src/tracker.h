@@ -132,7 +132,7 @@ namespace legit {
 
         template<class T>
         Tracker* createTracker(Config& config, string id) {
-            return new T(config, id);
+            return new T(id);
         }
 
         template<class T>

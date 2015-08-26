@@ -34,7 +34,7 @@ namespace legit {
         class ModalityConvex : public Modality {
 
         public:
-            ModalityConvex(Config& config, string configbase);
+            ModalityConvex(string configbase);
             ~ModalityConvex();
 
             virtual void flush();
@@ -59,7 +59,7 @@ namespace legit {
         class ModalityBounding : public Modality {
 
         public:
-            ModalityBounding(Config& config, string configbase);
+            ModalityBounding(string configbase);
             ~ModalityBounding();
 
             virtual void flush();
