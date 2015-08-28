@@ -26,6 +26,7 @@
 #include <opencv2/video/tracking.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "common/canvas.h"
 #include "common/utils/utils.h"
 #include "common/utils/defs.h"
 #include "common/math/geometry.h"
@@ -50,7 +51,7 @@ namespace legit {
             int id;
             vector<float> weights;
         } PatchReweight;
-        class LGTTracker : public Tracker {
+        class LGTTracker {
 
         public:
 
@@ -90,8 +91,6 @@ namespace legit {
             virtual void stage_add_patches(Image& image, bool announce, bool push);
 
             int verbosity;
-
-            Config configuration;
 
             string instance;
 

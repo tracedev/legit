@@ -24,7 +24,6 @@
 #include <string.h>
 #include <opencv2/core/core.hpp>
 #include "../patches/patchset.h"
-#include "common/utils/config.h"
 #include "common/utils/utils.h"
 #include "common/utils/defs.h"
 
