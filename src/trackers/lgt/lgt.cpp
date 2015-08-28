@@ -30,6 +30,9 @@ namespace legit {
             int index;
         } CostPair;
 
+        bool __random_init = false;
+
+
         int compare_cost_pair (const void* i, const void* j) {
             float c = ( ((CostPair*)j)->cost - ((CostPair*)i)->cost );
             return (c < 0) ? -1 : (c > 0) ? 1 : 0;
@@ -83,6 +86,11 @@ namespace legit {
             addition_distance =  3.0;
 
             string patch_type_string = "histogram";
+
+            if (!__random_init) {
+                RANDOM_SEED(time(NULL));
+                __random_init = true;
+            }
 
 
 

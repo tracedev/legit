@@ -23,7 +23,6 @@ LEGIT_ADD_SOURCES(
 		src/common/math/statistics.cpp
 		src/common/math/geometry.cpp
 		src/common/canvas.cpp
-	    src/api/legit.cpp
 		src/tracker.cpp
 )
 
@@ -52,8 +51,6 @@ ADD_DEFINITIONS(-DBUILTIN_TRACKERS="trackers.h")
 
 set_property(SOURCE src/tracker.cpp APPEND PROPERTY OBJECT_DEPENDS "${BUILD_ROOT}/trackers.h" "${BUILD_ROOT}/config.h")
 
-
-ADD_SUBDIRECTORY(src/api/)
 
 set(LEGIT_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/src" PARENT_SCOPE)
 

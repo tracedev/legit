@@ -26,7 +26,6 @@
 #include <opencv2/video/tracking.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "common/utils/config.h"
 #include "common/utils/utils.h"
 #include "common/utils/defs.h"
 #include "common/math/geometry.h"
