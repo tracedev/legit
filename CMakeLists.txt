@@ -14,7 +14,6 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 LEGIT_ADD_SOURCES(
 	src/common/utils/utils.cpp
-		src/common/utils/config.cpp
 		src/common/utils/graphics.cpp
 		src/common/utils/string.cpp
 		src/common/image/histogram.cpp
@@ -46,10 +45,9 @@ ENDIF(BUILD_FAST_MATH)
 ADD_SUBDIRECTORY(src/trackers/)
 
 LEGIT_GENERATE_HEADERS(${CMAKE_CURRENT_BINARY_DIR})
-ADD_DEFINITIONS(-DBUILTIN_CONFIG="config.h")
 ADD_DEFINITIONS(-DBUILTIN_TRACKERS="trackers.h")
 
-set_property(SOURCE src/tracker.cpp APPEND PROPERTY OBJECT_DEPENDS "${BUILD_ROOT}/trackers.h" "${BUILD_ROOT}/config.h")
+set_property(SOURCE src/tracker.cpp APPEND PROPERTY OBJECT_DEPENDS "${BUILD_ROOT}/trackers.h" )
 
 
 set(LEGIT_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/src" PARENT_SCOPE)
